@@ -48,7 +48,7 @@ layui.extend({
 		var response = env.response;
 		var error_msg = env.debug?"<br><cite>URL：</cite>" + param.url : "";
 
-		param.url = (/json/.test(param.url) || param.data.ptype == 'html') ? param.url : env.request_host + param.url;
+		param.url = (/json/.test(param.url) || param.data.ptype == 'html') ? param.url : (env.is_local?(param.type = 'get','json/local/'+param.url+'.json'):env.request_host + param.url);
 		
 		if(param.type == 'post')
 		{
@@ -865,7 +865,7 @@ layui.extend({
 	f.checkLogin = function(check_login,callback)
 	{
 		//f.loading();
-		if(!check_login)
+		if(!check_login || env.is_local)
 		{
 			callback();
 		}else

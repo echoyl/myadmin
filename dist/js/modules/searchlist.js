@@ -59,7 +59,11 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 					{
 						for(let ik in cfg.where)
 						{
-							items.push(ik+'='+cfg.where[ik]);
+							//屏蔽page_info这个关键字
+							if(ik != 'page_info')
+							{
+								items.push(ik+'='+cfg.where[ik]);
+							}
 						}
 					}
 					var where = {};
