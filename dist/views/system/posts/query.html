@@ -1,0 +1,75 @@
+<script type="text/html" tpl lay-done="layui.queryDone(d);"></script>
+<div class="layui-card">
+	<div class="layui-search-header-auto">
+		<form class="layui-form" id="open_form_id" onsubmit="return false;">
+	
+		</form>
+	</div>
+	<div class="layui-card-body" style="padding-top:0;">
+		<table id="open_search_list" lay-filter="open_search_list"></table>
+	</div>
+</div>
+<script>
+layui.queryDone = function(d){
+	var firstIndex = layer.index;
+	layui.use(['searchlist'], function(){
+		d.param = d.param?d.param:{};
+		let page_config = {
+			url:'posts',
+			tableId:"open_search_list",
+			form_id:"open_form_id",
+			size:"mid",
+			height:394,
+			page_zie:8,
+			open:true,
+			event:{
+				chose:function(data){
+					layui.sa.close([data],firstIndex);
+				}
+			}
+		};
+		
+		page_config.search = {
+			options:[
+				//筛选项
+				{name:'keyword',encode:true,type:'input'}
+			],
+			buttons:[
+				//按钮
+				'search'
+			]
+		};
+		
+		let cols = [ //表头
+			{field: 'id', title: 'ID', width:80, sort: true}
+			,{field: 'title', title: '标题', width:200}
+			,{field: '', title: '操作',templet:'<div><a class="layui-btn layui-btn-xs" lay-event="chose">选择</a></div>'}
+		];
+		
+		if(d.param.mult)
+		{
+			cols.unshift({field: '', title: '', width:80, type:'checkbox'});
+			page_config.search.buttons.push({
+				icon:'icow icow-wancheng',
+				title:'确定',
+				classname:'',
+				func:function(cfg){
+					//添加默认打开新页面
+					let selected = layui.table.checkStatus('open_search_list');
+					if(selected.data.length > 0)
+					{
+						layui.sa.close(selected.data,firstIndex);
+					}else
+					{
+						layui.layer.msg('请勾选');
+					}
+				}
+			});
+		}
+		page_config.cols = cols;
+		
+		layui.searchlist.render(page_config);
+		
+	});
+}
+</script>

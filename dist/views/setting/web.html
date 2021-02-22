@@ -1,0 +1,181 @@
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>设置</cite></a>
+	<a><cite>网站设置</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-card-body">
+					<form class="layui-form" lay-filter="form_post">
+					<div class="layui-tab layui-tab-brief" lay-filter="component-tabs-brief">
+					<script type="text/html" tpl lay-url="sets/web" lay-done="layui.formRender(d);">
+						<ul class="layui-tab-title">
+							<li  class="layui-this">基本信息</li>
+						</ul>
+						<div class="layui-tab-content">
+					
+						<div class="layui-tab-item layui-show">
+						<div class="layui-form-item">
+							<label class="layui-form-label">网站名称</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[name]" value="{{= d.data.name}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="attachment" data-tip="没有LOGO -_-!" data-name="base[logo]" data-limit="1" data-input="1" data-title="网站logo" data-value="{{d.data.logo}}"></div>
+					
+						
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">地区</label>
+							<div class="layui-input-inline">
+								<input class="cas" data-level="3"  type="text" name="base[province_city_area]" value="{{d.data.province_city_area}}" placeholder="请选择" />	
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">公司名称</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[company]" value="{{d.data.company}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">公司地址</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[address]" value="{{d.data.address}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">地图定位</label>
+							<div class="layui-input-inline">
+								<div class="blmap" name="lat,lng" data-value="{{d.data.lat}},{{d.data.lng}}"></div>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">首页banner图</label>
+							
+							<div class="layui-input-inline" style="width:600px;">
+								<div class="bloption" name="base[banner]" data-value='{{d.data.banner}}' data-col="[{'name':'pic','title':'图片','type':'image','required':1},{'name':'date','title':'日期','type':'date'},{'name':'date_id','title':'选项','type':'select','data':[{'name':'test','value':'testv'},{'name':'test2','value':'test2v'}]},{'name':'link','title':'链接地址'}]"></div>
+							</div>
+
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">联系电话</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[tel]" value="{{d.data.tel}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">qq客服</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[qqx]" value="{{d.data.qqx}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">邮编</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[zipcode]" value="{{d.data.zipcode}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">邮箱</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[email]" value="{{d.data.email}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item" style="display:none;">
+							<label class="layui-form-label">网址</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[siteurl]" value="{{d.data.siteurl}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">版权信息</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[author]" value="{{d.data.author}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">备案信息</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[beian]" value="{{d.data.beian}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">title</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[seotitle]" value="{{d.data.seotitle}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">keywords</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[seokeywords]" value="{{d.data.seokeywords}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">description</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[seodescription]" value="{{d.data.seodescription}}"  autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						</div>
+
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="form_post">立即提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</script>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script> 
+layui.formRender = function(d)
+{
+	layui.use(['form'],function(){
+		var form = layui.form
+		,layer = layui.layer
+		,sa = layui.sa;
+		var $ = layui.$;
+		
+		layui.form.render();
+		//form.render();
+		//监听提交
+		form.on('submit(form_post)', function(data){
+			//layer.msg(JSON.stringify(data.field));
+			console.log(data);
+			//return false;
+			console.log('sub');
+			sa.request({
+				url: "sets/web"
+				,type:'post'
+				,data: data.field
+				,done: function(res) {
+					//登入成功的提示与跳转
+					layer.msg('操作成功', {
+						offset: '15px',
+						icon: 1,
+						time: 1000
+					}, function() {
+						layui.sa.reload();
+					});
+					
+				}
+			});
+			return false;
+		});
+		
+	});
+}
+</script>

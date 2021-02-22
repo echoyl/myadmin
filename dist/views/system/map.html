@@ -1,0 +1,98 @@
+
+<div class="layui-row layui-col-space5">
+	<script type="text/html" tpl lay-done="layui.openFrameRender(d);">
+		<div class="layui-col-xs8">		
+			<input type="text" name="map_address" value="{{ d.address }}" placeholder="搜索地址（必须加上省市然后地址）" class="layui-input" />
+			<input type="hidden" value="{{ d.lat }}" name="lat" /><input type="hidden" value="{{ d.lng }}" name="lng" />
+		</div>
+	</script>
+	<div class="layui-col-xs2">
+		<button class="layui-btn layui-btn-fluid" id="map_search">搜索</button>
+	</div>
+	<div class="layui-col-xs2">
+		<button class="layui-btn layui-btn-fluid" id="map_confirm">确定</button>
+	</div>
+</div>
+<div class="layui-row" style="padding-top:10px;">
+	<div class="editmap_mapAll" id="editmap_mapAll" style="height:450px;"></div>
+</div>
+
+<script>
+layui.openFrameRender = function(d){
+	window.HOST_TYPE = "2"; window.BMap_loadScriptTime = (new Date).getTime();
+	var firstIndex = 0;
+	layui.use(['env'], function(){
+		var layer = layui.layer
+		firstIndex = layer.index;
+		var $ = layui.$;
+		$.getScript("https://api.map.baidu.com/getscript?v=2.0&ak="+layui.env.bmap_ak+"&services=&t="+window.BMap_loadScriptTime, function(){
+			var map = new BMap.Map('editmap_mapAll');          // 创建地图实例  
+			var n = new BMap.Geocoder;
+			point = new BMap.Point(116.404, 60.915);  // 创建点坐标 
+			var marker  = new BMap.Marker(point);
+			map.centerAndZoom(point, 14);                 // 初始化地图，设置中心点坐标和地图级别 
+			var geolocation = new BMap.Geolocation();
+			geolocation.getCurrentPosition(function(r){
+				if(this.getStatus() == BMAP_STATUS_SUCCESS){
+					//console.log(r);
+					//var mk = new BMap.Marker(r.point);
+					//map.addOverlay(mk);
+					//map.panTo(r.point);
+					point = r.point
+					//alert('您的位置：'+r.point.lng+','+r.point.lat);
+				}
+				else {
+					alert('failed'+this.getStatus());
+				}
+				var p_lat = $("input[name='lat']").val();
+				var p_lng = $("input[name='lng']").val();
+				if(p_lat>0 || p_lng>0)
+				{
+					point = new BMap.Point(p_lng, p_lat);
+				}else
+				{
+					$("input[name='lat']").val(point.lat);
+					$("input[name='lng']").val(point.lng);
+				}
+				map.panTo(point);
+				
+				map.enableScrollWheelZoom();
+				map.enableDragging();
+				map.enableContinuousZoom();
+				map.addControl(new BMap.NavigationControl);
+				marker  = new BMap.Marker(point);
+				marker.setLabel(new BMap.Label("请您移动此标记，选择您的坐标！", {
+					offset: new BMap.Size(10, -20)
+				}));
+				map.addOverlay(marker), marker.enableDragging(), marker.addEventListener("dragend", function(e) {
+					var i = marker.getPosition();
+					n.getLocation(i, function(e) {
+						layui.$("input[name='map_address']").val(e.address);
+						layui.$("input[name='lat']").val(e.point.lat);
+						layui.$("input[name='lng']").val(e.point.lng);
+						//console.log(e);
+						//a.find(".input-group :text").val(e.address)
+					})
+				})
+			});
+			layui.$("#map_search").click(function(){
+				n.getPoint(layui.$("input[name='map_address']").val(), function(e) {
+					console.log(e);
+					map.panTo(e), marker.setPosition(e), marker.setAnimation(BMAP_ANIMATION_BOUNCE), setTimeout(function() {
+						marker.setAnimation(null)
+					}, 3600)
+				})
+			});
+			
+		});
+		$("#map_confirm").click(function(){
+			var res = {
+					lat:$("input[name='lat']").val(),
+					lng:$("input[name='lng']").val(),
+					address:$("input[name='map_address']").val(),
+				};
+			layui.sa.close(res,firstIndex);
+		});
+	});
+}
+</script>

@@ -1,0 +1,224 @@
+<div style="padding:0 10px 0px;">
+	<form class="layui-form">
+	<script type="text/html" tpl lay-done="layui.optionsInit(d)">
+		{{# 
+			var col_width =  '160px;';
+			if(d.col.length == 1)
+			{
+				col_width =  '405px;';
+			}else if(d.col.length == 2)
+			{
+				col_width =  '202px;';
+			}else if(d.col.length == 5)
+			{
+				col_width =  '120px;';
+			}else if(d.col.length == 6)
+			{
+				col_width =  '100px;';
+			}
+			
+		}}
+		<div class="layui-form-item">
+			{{#  layui.each(d.col, function(colIndex, col){ }}
+			<div class="layui-input-inline" style="width:{{col_width}}">
+				<input type="text" value="{{col.title}}" readonly disabled autocomplete="off" class="layui-input layui-col-md6" style="border:none;"/>
+			</div>
+			{{#  }); }}
+		</div>
+		<div id="myOptions">
+			
+			{{#  layui.each(d.val, function(index, item){ }}
+			<div class="layui-form-item">
+				{{#  layui.each(d.col, function(colIndex, col){ }}
+				<div class="layui-input-inline" style="width:{{col_width}}">
+					{{# if(col.type == 'date'){ }}
+					<input type="text" name="{{col.name}}"  value="{{item[col.name]}}" placeholder="{{col.title}}" autocomplete="off" class="layui-input layui-col-md6 bldate options_date options_input" />
+					{{# }else if(col.type == 'select'){ }}
+						<select name="{{col.name}}" class="options_input">
+							{{#  layui.each(col.data, function(sindex, sitem){ }}
+							<option value="{{sitem.value}}" {{# if(item[col.name] == sitem.value){ }}selected{{# } }}>{{sitem.name}}</option>
+							
+							{{#  }); }}
+						</select>
+					{{# }else if(col.type == 'image'){ }}
+						<button  type="button" data-name="{{col.name}}_{{colIndex}}_{{index}}" class="layui-btn layui-btn-primary option_image">选择图片</button>
+						<input name="{{col.name}}" value="{{item[col.name]}}" type="hidden" class="options_input" />
+						{{# if(item[col.name]){ }}<button title="点击浏览图片" type="button"  class="layui-btn layui-btn-primary show_one_img"><i class="layui-icon	layui-icon-tupian-copy-copy"></i></button>{{# } }}
+						
+					{{# }else{ }}
+					<input type="text" name="{{col.name}}" value="{{= item[col.name]}}" placeholder="{{col.title}}" autocomplete="off" class="layui-input layui-col-md6 options_input" />
+					{{# } }}
+				</div>
+				{{#  }); }}
+				<button type="button" class="layui-btn layui-btn-primary" onclick="layui.$(this).parent().remove();">
+					<i class="layui-icon layui-icon-close"></i>
+				</button>
+				<button type="button" class="layui-btn"><i class="icow icow-tuodong"></i>拖动排序</button>
+			</div>
+			{{#  }); }}
+			
+		</div>
+		<div class="layui-form-item" style="margin-top:40px;">
+			<button type="button" class="layui-btn addOption"><i class="layui-icon layui-icon-tianjia2"></i>添加参数</button>
+			<button type="button" class="layui-btn okOption layui-btn-primary"><i class="icow icow-dagou"></i>完成设置</button>
+		</div>
+		
+		<div type="template" id="myOptionsItem" class="layui-hide">
+			<div class="layui-form-item">
+				{{#  layui.each(d.col, function(colIndex, col){ }}
+				<div class="layui-input-inline" style="width:{{col_width}}">
+					{{# if(col.type == 'date'){ }}
+					<input type="text" name="{{col.name}}" id="{{col.name}}_{{colIndex}}_{{!{{d.length}}!}}" value="" placeholder="{{col.title}}" autocomplete="off" class="layui-input layui-col-md6 bldate options_input" />
+					{{# }else if(col.type == 'select'){ }}
+						<select name="{{col.name}}" class="options_input">
+							{{#  layui.each(col.data, function(sindex, sitem){ }}
+							<option value="{{sitem.value}}">{{sitem.name}}</option>
+							
+							{{#  }); }}
+						</select>
+					{{# }else if(col.type == 'image'){ }}
+						<button  type="button" data-name="{{col.name}}_{{colIndex}}_{{!{{d.length}}!}}" class="layui-btn layui-btn-primary option_image">选择图片</button>
+						<input name="{{col.name}}" value="" type="hidden" class="options_input" />
+						
+					{{# }else{ }}
+					<input type="text" name="{{col.name}}" value="" placeholder="{{col.title}}" autocomplete="off" class="layui-input layui-col-md6 options_input" />
+					{{# } }}
+				</div>
+				{{#  }); }}
+				<button type="button" class="layui-btn layui-btn-primary" onclick="layui.$(this).parent().remove();"><i class="layui-icon layui-icon-close"></i></button>
+				<button type="button" class="layui-btn"><i class="icow icow-tuodong"></i>拖动排序</button>
+			</div>
+		</div>
+	</script>
+	</form>
+</div>
+
+
+
+<script>
+layui.optionsInit = function(d){
+	layui.use(['form','element','sa','sortable','render'],function(){
+		var form = layui.form
+		,layer = layui.layer
+		,config = layui.setter
+		,view = layui.view
+		,element = layui.element
+		,sa = layui.sa
+		,admin = layui.admin;
+		var sortable = layui.sortable;
+		var $ = layui.$;
+		var firstIndex = layer.index;
+		console.log(firstIndex);
+		var params = d;
+		function myOptionsAddOne(v)
+		{
+			v.length = $("#myOptions .layui-form-item").length;
+			layui.laytpl($("#myOptionsItem").html()).render(v,function(html){
+				$("#myOptions").append(html);
+				optionRender();
+			})
+			
+			
+		}
+		
+		function optionRender()
+		{
+
+			//渲染form
+			form.render();
+			layui.render.init();
+			//添加上传图片事件
+			$("#myOptions .option_image").each(function(){
+				var name = $(this).data('name');
+				var self = this;
+				$(self).click(function(){
+					
+					sa.open({
+						data:{limit:1,isMultiple:1,isfile:0,name:name},
+						area:['820px','734px'],
+						url:'system/attachment',
+						title:'图片管理',
+						callback:function(res){
+							
+							//console.log($(self).next('input'));
+							$(self).next('input').val(res[0].url);
+							console.log($(self).parent().find('button').length);
+							if($(self).parent().find('button').length < 2)
+							{
+								$(self).parent().append('<button title="点击浏览图片" type="button"  class="layui-btn layui-btn-primary show_one_img"><i class="layui-icon	layui-icon-tupian-copy-copy"></i></button>');
+								optionRender();
+							}
+							
+						}
+					});
+					
+				});
+				$(self).removeClass('option_image');
+			});
+			
+			$("#myOptions .show_one_img").each(function(){
+				var self = this;
+				$(self).click(function(){
+					var img = $(self).prev().val();
+					sa.img(img);
+				});
+				$(self).removeClass('show_one_img');
+				
+			});
+		}
+		
+		optionRender();
+		
+		setTimeout(function(){
+			$(".addOption").click(function()
+			{
+				myOptionsAddOne({});
+			});
+			$(".okOption").click(function(){
+				var data = [];
+				var isEmpty = false;
+				
+				$("#myOptions").find('.layui-form-item').each(function(){
+					//读取所有input的值和属性
+					var item = {};
+					var i = 0;
+					$(this).find('.options_input').each(function(){
+						
+						var val = '';
+						if($(this).prop("tagName") == 'SELECT')
+						{
+							//select标签
+							val = $(this).find('option:selected').val();
+						}else
+						{
+							//默认input
+							val = $(this).val();
+						}
+						item[$(this).attr('name')] = val;
+						console.log(params.col[i]);
+						if(val === '' && params.col[i].required == 1)
+						{
+							isEmpty = true;
+						}
+						i++;
+					})
+					
+					data.push(item);
+				});
+				if(isEmpty)
+				{
+					layer.msg('请输入完整信息');
+				}else
+				{
+					console.log(firstIndex);
+					layui.sa.close(data,firstIndex);
+				}
+				
+				
+			})
+			sortable.create(document.getElementById('myOptions', { group: 'myOptions',onEnd:function(){console.log('end');} }));
+		},100);
+
+	});
+}
+</script>

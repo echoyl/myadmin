@@ -1,0 +1,166 @@
+
+
+<div class="layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a lay-href="">主页</a>
+		<a><cite>搜索列表</cite></a>
+		<a><cite>示例</cite></a>
+	</div>
+</div>
+
+<style type="text/css">
+.site-demo-code {
+    width: 100%;
+    min-height: 700px;
+    border: none;
+    padding: 10px;
+    resize: none;
+    font-size: 12px;
+    background-color: #F7FBFF;
+    color: #881280;
+    font-family: Courier New;
+	tab-size:4;
+}
+</style>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-card-body">
+					<div class="layui-tab layui-tab-brief" lay-filter="tab_change">
+						<ul class="layui-tab-title">
+							<li  class="layui-this">示例</li>
+							<li>查看代码</li>
+						</ul>
+						
+						<div class="layui-tab-content">
+							<div class="layui-tab-item layui-show">
+								<script type="text/html" id="code_html" tpl lay-done="layui.searchRender(d);">
+									<div class="layui-search-header-auto">
+										<form class="layui-form" id="search_form" onsubmit="return false;">
+									
+										</form>
+									</div>
+									<div class="layui-card-body" style="padding-top:0;">
+										<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
+									</div>
+									<div class="layui-card-body layui-row layui-col-space20" style="padding-top:0;padding-bottom:10px;" id="result_html">
+
+									</div>
+								</script>
+							</div>
+							<div class="layui-tab-item">
+								<textarea class="layui-border-box site-demo-text site-demo-code" spellcheck="false" readonly=""></textarea>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+<script id="code">
+layui.searchRender = function(){
+	layui.use(['searchlist','element'], function(){
+		
+		var page_config = {
+			url:'news/news',
+			page:'example/search/',
+			page_post:'example/search/post'
+		};
+		
+		var $ = layui.$;
+
+		
+		page_config.search = {
+			options:[
+				//筛选项
+				{name:'category_id',list_name:'categorys',type:'pickerx'},
+				{
+					name:'keyword',encode:true,type:'input',width:'300px;'
+				},
+				{
+					name:'date',type:'bldate',data_type:'date',width:'200px;'
+					,params:{
+						'data-type':'date',placeholder:'请选择日期'
+					}
+				},
+				{name:'pca',type:'cas',data_level:1,'placeholder':'请选择地区'},
+				{
+					name:'simple_id',type:'select_single',data_list:[{"cid":"1","title":"指定字段2"},{"cid":"2","title":"指定字段2"},{"cid":"3","title":"指定字段3"},{"cid":"4","title":"默认选中字段"}]
+					,params:{
+						'data-id':'cid','data-name':'title',placeholder:'请选择'
+					}
+				},
+				{
+					name:'more_id',type:'xm_select',data_list:[
+						{"name": "销售员", "children": [
+							{"name": "张三", "id": 1},
+							{"name": "李四", "id": 2},
+							{"name": "王五", "id": 3}
+						]},
+						{"name": "奖品", "children": [
+							{"name": "苹果2", "id": 4},
+							{"name": "香蕉2", "id": 5},
+							{"name": "葡萄2", "id": 6}
+						]}
+					],
+					width:"500px",
+					params:{
+						placeholder:"请选择多选分类"
+					}
+				}
+			],
+			buttons:[
+				//按钮
+				'search','add','delete'
+			]
+		};
+		
+		
+		page_config.cols = [ //表头
+			{field: '', title: '', width:80, type:'checkbox'}
+			,{field: 'id', title: 'ID', width:80, sort: true}
+			,{field: 'title', title: '标题', width:300}
+			,{field: 'category.title', title: '分类', width:120}
+			,{field: 'created_at', title: '添加时间', width:180}
+			,{field:'displayorder',sort: true, edit:'text',width:'100', title: '排序'}
+			,{field: 'status', title: '状态', width: 100, sort: true}
+			,{field: 'edit', title: '操作'}
+		]
+		layui.searchlist.render(page_config);
+		
+		
+		
+		layui.element.on('tab(tab_change)', function(data){
+
+			if(data.index == 1)
+			{
+				var new_arr = [];
+				
+				var code_html = $("#code_html").html().toString();
+				var arr2 = code_html.split("\n");
+				
+				arr2.forEach(function(line){
+					new_arr.push(line.replace(/(^\t{9})/g,""));
+				});
+				
+				var html = $("#code").html().toString();
+				var arr = html.split("\n");
+				new_arr.push('<script>');
+				arr.forEach(function(line){
+					//new_arr.push(line.replace(/(^\t{9})/g,""));
+					new_arr.push(line);
+				});
+				new_arr.push("<\/script>");
+				console.log(arr);
+				$(data.elem).find('.layui-tab-item:eq(1)').find('textarea').val(new_arr.join("\n"));
+			}
+
+		});
+		
+	});
+};
+</script>

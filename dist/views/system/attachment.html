@@ -1,0 +1,566 @@
+<link rel="stylesheet" href="./dist/style/attachment.css?t=201800202-57">
+<div style="padding:0 10px 0px;" id="myFile">	
+	<script type="text/html" tpl lay-done="layui.openFrameRender(d);">
+		<div class="topMenu">
+			<div class="buttonWrap">
+				<span id="uploadButton">
+					<a id="file_upload_1-button" href="javascript:void(0)" class="uploadify-button ">
+						<div class="uploadIcon">
+						</div>
+						<div class="uploadTip">
+							直接上传
+						</div>
+					</a>
+				</span>
+			</div>
+			<div class="buttonWrap">
+				<span id="uploadButton2">
+					<a id="file_upload_2-button" href="javascript:void(0)" class="uploadify-button jz_button" style="width:102px;">
+						<div class="file_folder">
+						</div>
+						<div class="uploadTip">新增文件夹</div>
+					</a>
+				</span>
+			</div>
+			<div class="buttonWrap">
+				<span>
+					<a id="choseOk" href="javascript:void(0)" class="uploadify-button">
+						<div class="uploadTip" style="text-align:center;">
+							确定
+						</div>
+					</a>
+				</span>
+			</div>
+		</div>
+		<div class="clearfloat">
+		</div>
+		<div class="jz_breadcrumb FileLibrary_breadcrumb-1_s8_H" style="display:none;"></div>
+		<div id="myFileContent" class="showFilesContent">
+			<div class="jz_scrollbar">
+				<div class="jz_scrollbar__wrap" style="margin-right: -17px; margin-bottom: -17px; height: calc(100% + 17px);">
+					<div class="jz_scrollbar__resize">
+						<div class="jz_scrollbar__view" id="attachments" style="height:500px;overflow-y:auto">
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<div style="text-align:center" id="attachment_page">
+
+		</div>
+	
+		<div class="layui-hide multiLimit">{{d.limit}}</div>
+		<div class="layui-hide isMultiple">{{d.isMultiple}}</div>
+		<input type="hidden" name="isFile" value="{{ d.isfile }}" />
+	</script>	
+</div>
+
+<script type="template" id="breadcrumbId">
+	{{#  layui.each(d.list, function(index, item){ }}
+	<span class="jz_breadcrumb__item">
+		<span class="jz_breadcrumb__inner">{{item.title}}</span> 
+		<span class="jz_breadcrumb__separator">&gt;</span>
+	</span>
+	{{#  }); }}
+</script>
+
+<script type="template" id="emptyId">
+	<div class="FileLibrary_content__empty-2T868P FileLibrary_content-1-DUHM" style="height:480px;width:760px;">
+		<div>
+			<div class="emptyFileLibrary_pic-1VUNxa"></div> 
+			<div class="emptyFileLibrary_tips-1uD9Xm">主人，赶紧上传文件吧</div>
+		</div>
+	</div>
+</script>
+
+<script type="template" id="percentId">
+	<div style="width:500px;text-align:center;padding:40px 20px;" id="{{d.id}}">
+		<div style="margin-bottom:10px;">正在上传<span class="percent_now_index">1</span>/<span class="percent_allcount">{{d.count}}</span>个文件</div>
+		<div class="layui-progress layui-progress-big" lay-filter="uploadProgress">
+			<div class="layui-progress-bar layui-bg-green"><p class="layui-progress-text"></p></div>
+			
+		</div>
+	</div>
+</script>
+<script type="template" id="folderItem">
+	{{# var data_json = JSON.stringify(d.data),d=d.data;}}
+	<div class="pictureFrame draggableFile">
+		<table cellpadding="0" cellspacing="0" class="pictureWrapTable" style="width: 80px;">
+		<tr>
+			<td id="imgkk_a24998cc102c3a80def5158546366d66" align="center" valign="middle" data-type="folder" data-id="{{d.id}}" colspan="2" class="imgkk">
+				<table cellpadding="0" cellspacing="0" class="pictureMainFrame2 imgContent">
+				<tr align="center" valign="middle">
+					<td style="width: 100%; height: 100%;">
+						<div class="FolderPreviewer_preview_wrap-3Ajivl"></div>
+					</td>
+				</tr>
+				</table>
+				<div data-id="{{d.id}}" data-type="folder" title="删除该文件夹" class="delFileIcon delFileIcon2 fileItem">
+				</div>
+			</td>
+		</tr>
+		<tr colspan="2" style="height: 26px;">
+			<td align="left">
+				<div class="picTitle">
+					<input data-id="{{d.id}}" data-type="folder" maxlength="100" style="outline:none;" value="{{d.name}}" data-old="{{d.name}}" />
+				</div>
+			</td>
+		</tr>
+		</table>
+	</div>
+</script>
+<script type="template" id="imageImtem">
+	{{# var data_json = JSON.stringify(d.data),choseDataIds=d.choseDataIds,d=d.data;}}
+	<div class="pictureFrame draggableFile">
+		<table cellpadding="0" cellspacing="0" class="pictureWrapTable" style="width: 80px;">
+		<tr>
+			<td id="imgkk_a24998cc102c3a80def5158546366d66" align="center" valign="middle" data-type="img" colspan="2" title="点击选中图片" class="imgkk">
+				<table cellpadding="0" cellspacing="0" class="pictureMainFrame imgContent">
+				<tr align="center" valign="middle">
+					<td style="width: 100%; height: 100%;background:#f3f3f3;">
+						<img src='{{d.thumb_url}}' class="img0" style="width:{{d.width}}; height: {{d.height}};">
+						<div data-data='{{data_json}}' class="checkstate {{layui.$.inArray(d.id,choseDataIds) > -1?'checked':'unchecked'}}"></div>
+					</td>
+				</tr>
+				</table>
+				<div data-id="{{d.id}}" data-type="img" title="删除该文件" class="delFileIcon fileItem">
+				</div>
+			</td>
+		</tr>
+		<tr colspan="2" style="height: 26px;">
+			<td align="left">
+				<div title="文件名称：{{d.name}} 文件大小：{{d.size}} 创建时间：{{d.created_at}}" class="picTitle">
+					<input data-id="{{d.id}}" data-type="img" maxlength="100" style="outline:none;" value="{{d.name}}" data-old="{{d.name}}" />
+				</div>
+			</td>
+		</tr>
+		</table>
+	</div>
+</script>
+<script>
+layui.openFrameRender = function(d){
+	layui.use(['form','laypage','element','upload'],function(){
+		
+		var choseData = [];
+		var choseDataIds = [];//本来想做默认选中的，但是功能太复杂，不做了
+		var form = layui.form
+		,layer = layui.layer
+		,laypage = layui.laypage
+		,config = layui.env
+		,view = layui.view
+		,element = layui.element
+		,sa = layui.sa;
+		
+		var $ = layui.$;
+		var processShowId = '';
+		var groupId = 0;
+		var parentGroup = [];
+		console.log($("input[name='isFile']").val());
+		var uploaderProcessId = 'uploaderProcessId';
+		var firstIndex = 0;
+		var uploadInst;
+		function openProcess(v,c)
+		{
+			var html = layui.laytpl($("#percentId").html()).render({id:uploaderProcessId,count:c});
+			processShowId = layer.open({
+				area:['540px','130px'],
+				shade:0,
+				type: 1,
+				title: false,
+				closeBtn: 0,
+				shadeClose: true,
+				skin: 'yourclass',
+				content: html,
+				success:function()
+				{
+					element.progress('uploadProgress', v);
+				}
+			});
+		}
+		function closeProcess()
+		{
+			layer.close(processShowId);
+		}
+		function flashProcess(val)
+		{
+			element.progress('uploadProgress', val);
+		}
+		
+		function initPage(page)
+		{
+			//console.log($("input[name='isFile']").val());
+			if(!firstIndex)
+			{
+				firstIndex = layer.index;
+			}
+			//openProcess('10%',10);
+			
+			
+			sa.loading($('#layui-layer'+layer.index));
+			layui.sa.request({
+				url:'attachment'
+				,type:'get'
+				,data: {page:page,isFile:$("input[name='isFile']").val(),groupId:groupId}
+				,done: function(d) {
+					var string = '';
+					//添加文件夹
+					layui.each(d.groups, function(index, item){
+						string += layui.laytpl(layui.$("#folderItem").html()).render({data:{id:item.id,name:item.title}});
+					});
+					//添加文件夹路径 显示
+					if(d.parentGroup.length > 0)
+					{
+						d.parentGroup.unshift({title:'默认文件夹',id:0});
+						parentGroup = d.parentGroup;
+						$(".jz_breadcrumb").html(layui.laytpl(layui.$("#breadcrumbId").html()).render({list:d.parentGroup}));
+						$(".jz_breadcrumb").show();
+						//设置按钮失效效果
+						if(parentGroup.length >= 4)
+						{
+							$("#file_upload_2-button").attr('disabled','disabled');
+						}else
+						{
+							$("#file_upload_2-button").removeAttr('disabled');
+						}
+						
+					}else
+					{
+						$(".jz_breadcrumb").hide();
+						$("#file_upload_2-button").removeAttr('disabled');
+					}
+					
+					layui.each(d.data, function(index, item){ 
+						var thumb_url = './dist/lib/banlv/nopic.jpg';
+						if(item.url)
+						{
+							if(item.thumb_url)
+							{
+								thumb_url = item.url.indexOf("http") > -1?item.thumb_url:layui.env.storage_path+item.thumb_url;
+							}else
+							{
+								//读取文件缩略图标
+								thumb_url = './dist/lib/banlv/'+item.ext+'.png';
+							}
+						}
+						item.thumb_url = thumb_url;
+						
+						string += layui.laytpl(layui.$("#imageImtem").html()).render({data:item,choseDataIds:choseDataIds,config:config});
+					});
+					if(!string)
+					{
+						string = layui.laytpl(layui.$("#emptyId").html()).render({});
+					}
+					$("#attachments").html(string);
+					layui.imageDone(d);
+					if(page == 1)
+					{
+						layui.laypage.render({
+							elem: 'attachment_page' //注意，这里的 test1 是 ID，不用加 # 号
+							,count: d.count //数据总数，从服务端得到
+							,limit:28
+							,curr: 1 //获取起始页
+							,theme: '#557ce1'
+							,jump: function(obj, first){
+								//obj包含了当前分页的所有参数，比如：
+								//console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+								if(!first)
+								{
+									initPage(obj.curr);
+								}
+							}
+						});
+					}
+				}
+			});
+			
+		}
+		setTimeout(function(){
+			initPage(1);
+			
+			$("#uploadButton2").click(function(){
+				//新增文件夹
+				if(parentGroup.length >= 4)
+				{
+					return;//最多3级文件夹 就失效
+				}
+				layui.sa.request({
+					url: 'attachment/addGroup'
+					,type:'post'
+					,data: {name:'新建文件夹',id:0,parent_id:groupId}
+					,done: function(res) {
+						//登入成功的提示与跳转
+						if(!res.code)
+						{
+							initPage(1);
+						}else
+						{
+							layer.msg(res.msg,{time:1000});
+						}
+						
+					}
+				});
+			});
+			uploadInst = layui.imageButtonRender();
+			
+
+			$("#choseOk").click(function(){
+				layui.sa.close(choseData,firstIndex);
+			});
+		},100);
+		
+		layui.imageButtonRender = function()
+		{
+			var isFile = $("input[name='isFile']").val();
+			return layui.upload.render({
+					elem: "#uploadButton"
+					,accept:isFile==1?'file':'images'
+					,field:'file'
+					,headers:{
+						'Authorization':'Bearer '+layui.sa.getAccessToken()
+					}
+					,multiple:true
+					,url:config.request_host+'uploader/index?isfile='+isFile+'&groupId='+groupId
+					,choose: function(obj){
+						this.files = obj.pushFile();
+					}
+					,before:function(obj){
+						/*
+						_msg = layui.layer.msg('上传中...', {
+							icon: 16
+							,shade: 0.01
+							,time:-1
+						});
+						*/
+						var count = 0;
+						var files = obj.pushFile();
+						for(var i in files)
+						{
+							console.log(i);
+							count++;
+						}
+						openProcess('0%',count);
+					}
+					,progress: function(n, elem){
+						var percent = n + '%' //获取进度百分比
+						//element.progress('demo', percent); //可配合 layui 进度条元素使用
+						console.log(percent);
+						if(processShowId)
+						{
+							flashProcess(percent);
+							if(n == 100)
+							{
+								//下一个
+								var index = parseInt($("#"+uploaderProcessId).find('.percent_now_index').html())+1;
+								var allc = parseInt($("#"+uploaderProcessId).find('.percent_allcount').html());
+								if(allc >= index)
+								{
+									$("#"+uploaderProcessId).find('.percent_now_index').html(index);
+									flashProcess('0%');
+								}
+								
+							}
+							
+						}
+						//以下系 layui 2.5.6 新增
+						console.log(elem); //得到当前触发的元素 DOM 对象。可通过该元素定义的属性值匹配到对应的进度条。
+					}
+					,done: function(res, index, upload){
+						//console.log(res);
+						closeProcess();
+						if(res.code)
+						{
+							layui.layer.msg(res.msg);
+						}else
+						{
+							initPage(1);
+						}
+						
+						
+						return delete this.files[index]; //删除文件队列已经上传成功的文件
+					}
+					,allDone: function(res, index, upload){
+						//console.log(res);
+						closeProcess();
+						initPage(1);
+						//uploadInst.reload();
+						//layui.layer.close(_msg);
+						
+					}
+				});
+		}
+		
+		layui.imageDone = function(d){		
+			$('.imgkk').hover(function () {
+				$(this).find('.delFileIcon').addClass('delIconHover');
+			  },
+			  function () {
+				$(this).find('.delFileIcon').removeClass('delIconHover');
+			});
+			$(".imgkk").click(function(){
+				var type = $(this).attr('data-type');
+				console.log(type);
+				if(type == 'img')
+				{
+					//console.log($(".multiLimit").html());
+					var multiLimit = parseInt($(".multiLimit").html());
+					var isMultiple = parseInt($(".isMultiple").html());;
+					var check = false;
+					var itemData = $(this).find('.checkstate').data('data');
+					if(isMultiple != 1)
+					{
+						//多选
+						var isChecked = $(this).find('.checkstate').hasClass('checked');
+						if(isChecked)
+						{
+							$(this).find('.checkstate').removeClass('checked').addClass('unchecked');
+						}else
+						{
+							if(multiLimit == -1)
+							{
+								layer.msg('数量达到最大，无法选取',{time:1000});
+								return false;
+							}
+							if(choseData.length >= multiLimit)
+							{
+								layer.msg('最多选取'+multiLimit+'张',{time:1000});
+								return false;
+							}
+							$(this).find('.checkstate').removeClass('unchecked').addClass('checked');
+							check = true;
+						}
+						//选中图片
+						if($.inArray(itemData.id,choseDataIds) > -1)
+						{
+							//已经存在
+							if(!check)
+							{
+								choseData.forEach(function(item,index){
+									if(item.id == itemData.id)
+									{
+										choseData.splice(index, 1);
+										choseDataIds.splice(index, 1);
+									}
+								});
+							}
+						}else
+						{
+							//不存在
+							if(check)
+							{
+								choseData.push(itemData);
+								choseDataIds.push(itemData.id);
+							}
+						}
+					}else
+					{
+						//单选
+						$(".checked").removeClass('checked').addClass('unchecked');
+						$(this).find('.unchecked').removeClass('unchecked').addClass('checked');
+						check = true;
+						choseData = [itemData];
+						choseDataIds = [itemData.id];
+					}
+					
+					
+					console.log(choseDataIds);
+				}else
+				{
+					groupId = $(this).attr('data-id');
+					var isFile = $("input[name='isFile']").val();
+					uploadInst.reload({
+						url:config.request_host+'uploader/index?isfile='+isFile+'&groupId='+groupId
+					});
+					initPage(1);
+				}
+				
+			});
+			//图片名称修改
+			/*
+			$(".picTitle").click(function(){
+				$(this).find('span').hide();
+				$(this).find('input').show();
+				$(this).find('input').focus();
+				
+			});
+			*/
+			$(".picTitle").find('input').focus(function(){
+				$(this).parent().addClass('hover');
+			});
+			$(".picTitle").find('input').blur(function(){
+				var self = this;
+				var value = $(this).val();
+				var value2 = $(this).attr('data-old');
+				var id = $(this).attr('data-id');
+				var type = $(this).attr('data-type');
+				$(self).parent().removeClass('hover');
+				if(value != value2)
+				{
+					//修改文字
+					layui.sa.request({
+						url: type == 'img'?'attachment':'attachment/addGroup'
+						,type:'post'
+						,data: {name:value,id:id}
+						,done: function(res) {
+							//登入成功的提示与跳转
+							layer.msg('操作成功', {
+								offset: '15px',
+								icon: 1,
+								time: 1000
+							}, function() {
+								$(self).attr('data-old',value);
+								
+							});
+							
+						}
+					});
+					console.log('change');
+				}
+			});
+			$(".delFileIcon").click(function(event){
+				var id = $(this).attr('data-id');
+				var type = $(this).attr('data-type');
+				layer.confirm(type == 'img'?'确定要删除么':'确定要删除么,删除文件夹后无法在图片管理中找到该文件夹下的图片！', function(index){
+					//后台提交删除数据
+					layui.sa.request({
+						url:type == 'img'?'attachment/1':'attachment/delGroup'
+						,type:type == 'img'?'delete':'post'
+						,data: {ids:id}
+						,done: function(res) {
+							//登入成功的提示与跳转
+							layer.msg('操作成功', {
+								offset: '15px',
+								icon: 1,
+								time: 1000
+							}, function() {
+								initPage(1);
+							});
+							
+						}
+					});
+				});
+				return false;
+			});
+			$(".jz_breadcrumb__item").click(function(){
+				var index = $(".jz_breadcrumb__item").index(this);
+				if(index == parentGroup.length - 1)
+				{
+					return;//最后一个失效
+				}
+				
+				var groupInfo = parentGroup[index];
+				groupId = groupInfo.id;
+				var isFile = $("input[name='isFile']").val();
+				uploadInst.reload({
+					url:config.request_host+'uploader/index?isfile='+isFile+'&groupId='+groupId
+				});
+				initPage(1);
+			});
+		}
+		
+		
+		
+	});
+}
+</script>

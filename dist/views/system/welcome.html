@@ -1,0 +1,102 @@
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">后台信息</a>
+	<a><cite>详情</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+	<div class="layui-row layui-col-space15">
+
+
+    <div class="layui-col-md12">
+		<div class="layui-card">
+			<div class="layui-card-header">版本信息</div>
+			<div class="layui-card-body layui-text">
+				<script type="text/html" id="code" tpl lay-url="./json/sysinfo.js" lay-done="layui.sysinfoRender(d);">
+					<table class="layui-table">
+						<colgroup>
+							<col width="100">
+							<col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>系统版本</td>
+								<td>
+									2.0
+								</td>
+							</tr>
+							<tr>
+								<td>前端框架</td>
+								<td>
+									Layui
+								</td>
+							</tr>
+							<tr>
+								<td>后端框架</td>
+								<td>
+									Laravel 版本6.x
+								</td>
+							</tr>
+							<tr>
+								<td>主要特色</td>
+								<td>单页面 / 响应式 / 清爽 / 极简</td>
+							</tr>
+
+						</tbody>
+					</table>
+				</script>
+			</div>
+		</div>
+
+    </div>
+	
+	<div class="layui-col-md12">
+		<div class="layui-card">
+			<div class="layui-card-header">服务器信息</div>
+			<div class="layui-card-body layui-text">
+				<table class="layui-table">
+					<colgroup>
+						<col width="100">
+						<col>
+					</colgroup>
+					<tbody>
+						<tr>
+							<td>服务器</td>
+							<td>
+								Nginx
+							</td>
+						</tr>
+						<tr>
+							<td>PHP版本</td>
+							<td>
+								7.3
+							</td>
+						</tr>
+						<tr>
+							<td>数据库软件</td>
+							<td>
+								Mysql 版本5.x
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+    </div>
+    
+  </div>
+</div>
+
+
+<script>
+layui.sysinfoRender = function(d){
+	layui.use(['table'],function(){
+		
+		
+	});
+}
+
+</script>
+

@@ -1,0 +1,57 @@
+<title>角色列表</title>
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>角色</cite></a>
+	<a><cite>角色列表</cite></a>
+  </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-search-header-auto">
+					<form class="layui-form" id="search_form" onsubmit="return false;">
+
+						
+					</form>
+				</div>
+				<div class="layui-card-body" style="padding-top:0;">
+					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+<script>
+(function(){
+	layui.use(['searchlist'], function(){
+		var page_config = {
+			url:'perm/role',
+			page:'perm/role/',
+			page_post:'perm/role/post'
+		};
+		
+		var sl = layui.searchlist;
+		var $ = layui.$;
+
+		
+		page_config.search = {
+			options:[],
+			buttons:['add','delete']
+		};
+		
+		
+		page_config.cols = [ //表头
+			{field: '', title: '', width:80, type:'checkbox'}
+			,{field: 'id', title: 'ID', width:60, sort: true}
+			,{field: 'title', title: '名称', width:300}
+			,{field: 'created_at', title: '添加时间', width:180}
+			,{field: 'status', title: '状态', width: 100, sort: true}
+			,{field: 'edit', title: '操作'}
+		]
+		sl.render(page_config);
+		
+	});
+})();
+</script>

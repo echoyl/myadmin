@@ -1,0 +1,49 @@
+<div class="layui-row layui-col-space5">
+	<div class="layui-col-xs10">
+		<input type="text" name="keyword" placeholder="搜索角色" class="layui-input" />
+	</div>
+	<div class="layui-col-xs2">
+		<button class="layui-btn layui-btn-fluid" id="search_role">搜索</button>
+	</div>
+</div>
+<div class="layui-row">
+	<table id="search_role_list" lay-filter="search_role_list"></table>
+</div>
+<script>
+layui.use(['table','layer','setter'], function(){
+	var $ = layui.$,layer = layui.layer;
+	var table = layui.table;
+	var firstIndex = layer.index;
+	table.render({
+		elem: '#search_role_list'
+		,height: 400
+		,url: 'perm/role' //数据接口
+		,page: true //开启分页
+		,limit:8
+		,cols: [[ //表头
+			{field: 'id', title: 'ID', width:80, sort: true}
+			,{field: 'rolename', title: '角色名', width:200}
+			,{field: 'last_login_time', title: '操作',templet:'<div><a class="layui-btn layui-btn-xs" lay-event="chose">选择</a></div>'}
+		]],
+		done:function(){
+			//layer.close(_msg);
+		}
+	});
+	$("#search_role").click(function(){
+		var keyword = $("input[name='keyword']").val();
+		table.reload('search_role_list',{url:'perm/role?keyword='+keyword,page:{curr:1},done:function(){}});
+	});
+	table.on('tool(search_role_list)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		var data = obj.data; //获得当前行数据
+		var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+		var tr = obj.tr; //获得当前行 tr 的DOM对象
+		if(layEvent === 'chose'){ //查看
+			if(typeof layui.frameCallback == 'function')
+			{
+				layui.frameCallback(data);
+			}
+			layer.closeAll();
+		}
+	});
+});
+</script>

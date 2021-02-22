@@ -1,0 +1,63 @@
+<title>后台用户列表</title>
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a a-href="">主页</a>
+    <a><cite>后台用户</cite></a>
+	<a><cite>后台用户列表</cite></a>
+  </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-search-header-auto">
+					<form class="layui-form" id="search_form" onsubmit="return false;">
+					
+					</form>
+				</div>
+				<div class="layui-card-body" style="padding-top:0;">
+					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+
+<script>
+(function(d){
+	layui.use(['searchlist'], function(){
+		var page_config = {
+			url:'perm/user',
+			page:'perm/user/',
+			page_post:'perm/user/post'
+		};
+		
+		var sl = layui.searchlist;
+		var $ = layui.$;
+		
+		page_config.search = {
+			options:[
+				//筛选项
+				{name:'roleid',type:'select_single',list_name:'roles',placeholder:'请选择角色'},
+				{name:'keyword',encode:true,type:'input'}
+			],
+			buttons:[
+				//按钮
+				'search','add','delete'
+			]
+		};
+		
+		page_config.cols = [ //表头
+			{field: '', title: '', width:80, type:'checkbox'}
+			,{field: 'id', title: 'ID', width:60, sort: true}
+			,{field: 'username', title: '用户名', width:300}
+			,{field: 'logs_count', title: '登录数', width:100}
+			,{field: 'role.title', title: '角色名', width:120}
+			,{field: '', title: '最后使用时间', width:180,templet:function(d){return d.logs.length > 0?d.logs[0]['last_used_at']:'未使用'}}
+			,{field: 'status', title: '状态', width: 100, sort: true}
+			,{field: 'edit', title: '操作'}
+		]
+		sl.render(page_config);
+	});
+})();
+</script>

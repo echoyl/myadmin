@@ -1,0 +1,69 @@
+<title>新闻管理</title>
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>资讯</cite></a>
+	<a><cite>新闻管理</cite></a>
+  </div>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-card-table-header">
+					<form class="layui-form" onsubmit="return false;">
+						<script type="text/html" tpl lay-url="news/news?actype=search" lay-done="layui.searchlist.search(d);">
+							<div class="layui-input-inline">    
+								<div pickerx 
+										data-placeholder="请选择分类,请选择分类,请选择分类"
+										data-name="c1,c2,category_id" 
+										data-value="{{d.search.category_id}}"
+										data-datas='{{d.category_arr}}'></div>
+							</div>
+							<div class="layui-input-inline">
+								<input type="text" name="keyword" value="{{d.search.keyword}}" placeholder="请输入标题" autocomplete="off" class="layui-input" />
+							</div>
+							<a href="javascript:;" id="searchId"><button class="layui-btn layui-btn-sm layui-btn-normal"><i class="layui-icon layui-icon-search"></i></button></a>
+							<a href="javascript:;" lay-href="news/news/post" ><button class="layui-btn layui-btn-sm"><i class="layui-icon layui-icon-tianjia2"></i></button></a>
+							<a href="javascript:;" id="deleteId"><button class="layui-btn layui-btn-sm layui-btn-danger"><i class="layui-icon layui-icon-delete"></i></button></a> 
+						</script>						
+					</form>
+				</div>
+				<div class="layui-card-body">
+					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
+				</div>
+			</div>
+		</div>
+    </div>
+</div>
+<script>
+layui.use(['searchlist'], function(){
+  var sl = layui.searchlist;
+  var $ = layui.$;
+	pageConfig.url = 'account/user';
+	pageConfig.page_url = "account/user";
+	pageConfig.search = function(d){
+		$(pageConfig.searchId).click(function(){
+			var keyword = $("input[name='keyword']").val();
+			var category_id = $("select[name='category_id'] option:selected").val();
+			var c1 = $("select[name='c1'] option:selected").val();
+			var c2 = $("select[name='c2'] option:selected").val();
+			var date = $("input[name='sdate']").val();
+			location.hash = '#/news/news/index/?keyword='+encodeURI(keyword)+'&category_id='+[c1,c2,category_id].join(',');
+		});
+	}
+	pageConfig.cols = [ //表头
+				{field: '', title: '', width:80, type:'checkbox'}
+				,{field: 'id', title: 'ID', width:80, sort: true}
+				,{field: 'title', title: '标题', width:300}
+				,{field: 'category.title', title: '分类', width:120}
+				,{field: 'created_at', title: '添加时间', width:180}
+				,{field:'displayorder',sort: true, edit:'text',width:'100', title: '排序'}
+				,{field: 'status', title: '状态', width: 100, sort: true,templet:pageConfig.switchId}
+				,{field: '', title: '操作',templet:pageConfig.editId}
+			]
+	sl.render(pageConfig);
+	
+	
+});
+</script>

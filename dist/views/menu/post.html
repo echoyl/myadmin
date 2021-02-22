@@ -1,0 +1,187 @@
+<title>页面导航</title>
+<div class="layui-card layadmin-header">
+	<div class="layui-breadcrumb" lay-filter="breadcrumb">
+		<a a-href="">主页</a>
+		<a a-href="menus"><cite>页面导航</cite></a>
+		<a><cite>编辑</cite></a>
+	</div>
+</div>
+<div class="layui-fluid">
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-card-body">
+					<form class="layui-form" lay-filter="form_post" onsubmit="return false;">
+					<div class="layui-tab layui-tab-brief" lay-filter="component-tabs-brief">
+						<script type="text/html" tpl lay-url="menu/show" lay-done="formRender(d.data);">
+						<ul class="layui-tab-title">
+							<li class="layui-this">基本信息</li>
+							<li>内容</li>
+							<li>其它设置</li>
+						</ul>
+						<div class="layui-tab-content">
+					
+					<div class="layui-tab-item layui-show">
+						<div class="layui-form-item">
+							<label class="layui-form-label">菜单名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[title]" lay-verify="required" value="{{d.data.title}}" placeholder="请输入菜单名" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">URL别名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[alias]" value="{{d.data.alias}}" placeholder="" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+							<div class="layui-form-mid layui-word-aux">
+								必填项 根据这个名字生成链接，同级别菜单 值保持唯一性
+							</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">外链</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[link]" value="{{d.data.link}}" placeholder="请输入外链" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+							<div class="layui-form-mid">
+								如果填写外链，会直接跳转外链 权重最高
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">分类选择</label>
+							<div class="sa_query" data-url="system/category/query" data-param='{"parent_id":"0"}' name="title" name="base[category_id]" data-value="{{d.data.category_id}}" data-title="{{d.data.category.title}}"></div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">内容选择</label>
+							<div class="sa_query" data-url="system/posts/query" name="title" name="base[content_id]" data-value="{{d.data.content_id}}" data-title="{{d.data.content.title}}"></div>
+						</div>
+						
+
+						<div class="attachment" data-name="base[banner]" data-limit="1" data-input="1" data-title="菜单图片" data-value="{{d.data.banner}}"></div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">简介</label>
+							<div class="layui-input-inline">
+								<textarea name="base[desc]" placeholder="请输入简介" class="layui-textarea">{{d.data.desc}}</textarea>
+							</div>
+							<div class="layui-form-mid layui-word-aux">
+								请使用回车键换行
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">排序</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[displayorder]" value="{{d.data.displayorder}}" placeholder="请输入排序" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">模板标识</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[tpl]" value="{{d.data.tpl}}" placeholder="为空则读取选中模块下默认模板" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+							<div class="layui-form-mid layui-word-aux">
+								页面有单独的模板文件名 请填写
+							</div>
+						</div>
+						
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">分页数量</label>
+							<div class="layui-input-inline">
+								<input type="text" name="base[pagesize]" value="{{d.data.pagesize}}" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+							<div class="layui-form-mid layui-word-aux">
+								当为列表时 每页显示的数量
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">新开页面打开</label>
+							<div class="layui-input-block">
+								<input type="checkbox" name="base[blank]" {{d.data.blank == 1 && "checked"}} value="1" lay-skin="switch" lay-text="是|否" />
+							</div>
+						</div>
+						
+					</div>
+					<div class="layui-tab-item">					
+						<div class="layui-form-item">
+							<label class="layui-form-label">内容</label>
+							<div class="layui-input-block">
+								<textarea class="layui-textarea tinymce" name="base[content_detail]" placeholder="请输入内容">{{d.data.content_detail}}</textarea>
+							</div>
+						</div>
+					</div>
+					<div class="layui-tab-item">
+						<div class="layui-form-item">
+							<label class="layui-form-label">更多设置</label>
+							<div class="layui-input-inline" style="width:600px;">
+								<div class="bloption" name="base[specs]" data-value="{{=d.data.specs}}" data-col="{{=d.data.spec_arr}}"></div>
+							</div>
+						</div>
+					
+					</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">状态</label>
+							<div class="layui-input-block">
+								<input type="checkbox" name="base[status]" {{d.data.status == 1 && "checked"}} value="1" lay-skin="switch" lay-text="启用|关闭" />
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="form_post">立即提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								<input type="hidden" name="id" value="{{d.data.id}}">
+								<input type="hidden" name="base[parent_id]" value="{{d.data.parent_id}}">
+							</div>
+						</div>
+						</div>
+						</script>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function formRender(d){
+	layui.use(['sa','form','layer','env'], function(){
+	  var $ = layui.$
+	  ,sa = layui.sa
+	  ,layer = layui.layer;
+
+	  var form = layui.form;
+		form.render();
+
+		form.on('submit(form_post)', function(data){
+			
+			if(!data.field['base[status]'])
+			{
+				data.field['base[status]'] = 0;
+			}
+			
+			sa.request({
+				url: 'menu'
+				,type:'post'
+				,data: data.field
+				,done: function(res) {
+					//登入成功的提示与跳转
+					layer.msg('操作成功', {
+						offset: '15px',
+						icon: 1,
+						time: 1000
+					}, function() {
+						location.hash = '/menu/index';
+					});
+					
+				}
+			});
+			return false;
+		});
+		
+	});
+}
+</script>

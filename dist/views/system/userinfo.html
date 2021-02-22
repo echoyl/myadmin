@@ -1,0 +1,67 @@
+
+
+				<div class="layui-card-body">
+					<form class="layui-form" lay-filter="sysuser_render">
+					<script type="text/html" tpl lay-url="index/user" lay-done="layui.form.render();">
+						<div class="layui-form-item">
+							<label class="layui-form-label">用户名</label>
+							<div class="layui-input-inline">
+								<input type="text" name="user_name" value="{{d.data.username}}" readonly autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">旧密码</label>
+							<div class="layui-input-inline">
+								<input type="text" name="password" value="" lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">新密码</label>
+							<div class="layui-input-inline">
+								<input type="text" name="password2" value="" lay-verify="required" placeholder="新密码" autocomplete="off" class="layui-input layui-col-md6">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label"></label>
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="sysuser_render">保存</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+					</script>
+					</form>
+				</div>
+
+
+<script>
+layui.use(['form'], function(){
+	var form = layui.form
+	,layer = layui.layer
+	,sa = layui.sa;
+	var $ = layui.$;
+	var firstIndex = layer.index;
+	form.on('submit(sysuser_render)', function(data){
+		sa.request({
+			url: "index/user"
+			,type:'post'
+			,data: data.field
+			,done: function(res) {
+				layer.msg('操作成功', {
+					offset: '15px',
+					icon: 1,
+					time: 1000
+				}, function() {
+					//location.hash = search.redirect ? decodeURIComponent(search.redirect) : '/';
+					//
+					//admin.closeThisTabs();
+					//history.back(-1);
+					sa.close({},firstIndex);
+				});
+				
+			}
+		});
+		return false;
+	});
+	
+});
+</script>
