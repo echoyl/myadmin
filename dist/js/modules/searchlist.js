@@ -54,6 +54,7 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 				classname:'layui-btn-normal',
 				func:function(cfg){
 					var items = [];
+					let has_name = [];
 					//这里将页面设置的where参数复写在url中 防止搜索刷新后参数丢失
 					if(cfg.where)
 					{
@@ -66,6 +67,7 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 							}
 						}
 					}
+					
 					var where = {};
 					cfg.search.options.forEach(function(option){
 						var value = '';
@@ -82,9 +84,18 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 							value = encodeURI(value);
 						}
 						where[option.name] = value;
+						has_name.push(option.name);
 						items.push(option.name+'='+value);
 					});
-					
+					//将路由的参数预设进来
+					let rsearch = layui.sa.router()['search'];
+					for(var i in rsearch)
+					{
+						if(layui.$.inArray(i,has_name) == -1)
+						{
+							items.push(i+'='+rsearch[i]);
+						}
+					}
 					//console.log(where);
 					if(!cfg.open)
 					{
@@ -92,6 +103,7 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 					}
 					//这里自动修改表格的参数
 					table.reload(cfg.tableId,{where:$.extend({},cfg.where,where),page: {limit:cfg.page_zie,curr: 1}});
+					
 				}
 			},
 			add:{
@@ -153,11 +165,13 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 			var cfg = self.config;
 			var post_page = cfg.page_post?cfg.page_post:cfg.page + 'post';
 			
+			//添加路由参数
+			let rsearch = layui.sa.router()['search'];
 			
 			if(cfg.post_type == 'open')
 			{
 				layui.sa.open({
-					data:{id:id},
+					data:layui.$.extend({},rsearch,{id:id}),
 					area:cfg.area?cfg.area:false,
 					url:post_page,
 					title:'编辑添加',
@@ -168,7 +182,12 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 			}else
 			{
 				//默认进行页面跳转编辑
-				location.hash = '#/'+post_page+'?'+['id='+id].join('&');
+				let hash_par = ['id='+id];
+				for(var i in rsearch)
+				{
+					hash_par.push([i+'='+rsearch[i]]);
+				}
+				location.hash = '#/'+post_page+'?'+hash_par.join('&');
 			}
 		}
 	}
@@ -377,9 +396,12 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 							button += value.title;
 						}
 						button += '</button></a>';
-						$('body').on('click','#'+s_id,function(){
-							value.func(pageConfig);
-						})
+						if(typeof value.func == 'function')
+						{
+							$('body').on('click','#'+s_id,function(){
+								value.func(pageConfig);
+							});
+						}
 						buttons.push(button);
 						
 					});
@@ -401,9 +423,11 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 				self.is_init = true;
 				
 				//增加读取数据后的自定义回调
-				if(typeof pageConfig.done == 'function')
+				pageConfig.done(res);
+				
+				if(typeof pageConfig.customerDone == 'function')
 				{
-					pageConfig.done(res);
+					pageConfig.customerDone(res);
 				}
 			}
 		});
