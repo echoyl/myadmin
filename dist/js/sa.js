@@ -4,7 +4,8 @@ layui.extend({
 	categoryList:"js/modules/categoryList",
 	render:'js/modules/render',
 	echartsTheme:'js/modules/echarts/echartsTheme',
-	echarts:'js/modules/echarts/echarts'
+	echarts:'js/modules/echarts/echarts',
+	sa_upload:'js/modules/sa_upload'
 }).define(["laytpl", "layer",'render'], function(exports) {
 	
 	var $ = layui.$,
@@ -192,6 +193,7 @@ layui.extend({
 				{
 					//加载默认首页
 					f.inited = true;
+					f.getMenu();
 					//console.log('init');
 					t.hashChange();
 					return;
@@ -510,7 +512,7 @@ layui.extend({
 				e = $(".layui-layer[type=page]");
 			}
 		}
-		e.append($('<svg width="30" height="30" class="new_loading" style="position: absolute;left: 50%;top: 50%;z-index: 9999;margin-left: -15px;margin-top: -15px;"><circle class="mouth" cx="15" cy="15" r="10"></circle><circle class="eye" cx="15" cy="15" r="10"></circle></svg>'));
+		e.append($('<svg width="30" height="30" class="new_loading" style="position: fixed;left: 50%;top: 50%;z-index: 9999;margin-left: -15px;margin-top: -15px;"><circle class="mouth" cx="15" cy="15" r="10"></circle><circle class="eye" cx="15" cy="15" r="10"></circle></svg>'));
 	}
 	f.loadingIcon = function(e,show)
 	{
@@ -549,29 +551,25 @@ layui.extend({
 			});
 		}else
 		{
-			f.request({
-				type:'get',
-				url:env.menu_url,
-				data:{},
-				async:false,
-				dataType: "json",
-				success: function(res) {
-					if(!res.code)
-					{
-						f.local.set('menu_data',res,3600000);//记录缓存 下次不再网络请求
-						res.nav_fold = nav_fold;
-						res.subnav_fold = subnav_fold;
-						laytpl(tpl).render(res,function(html){
-							$(".wb-nav").remove();
-							$(".wb-subnav").remove();
-							$("#menus").before(html);
-							f.menuClickEvent();
-						});
-					}
-					
-				}
-			});
+			console.log('菜单获取失败，请刷新页面');
 		}
+	}
+	f.getMenu = function()
+	{
+		f.request({
+			type:'get',
+			url:env.menu_url,
+			data:{},
+			async:false,
+			dataType: "json",
+			success: function(res) {
+				if(!res.code)
+				{
+					f.local.set('menu_data',res,360000000);//记录缓存 下次不再网络请求
+				}
+			}
+		});
+		return;
 	}
 	f.menuClickEvent = function()
 	{

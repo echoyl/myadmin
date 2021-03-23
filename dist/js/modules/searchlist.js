@@ -39,6 +39,7 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 				}
 				
 			}
+			,post_param:false//edit事件是 打开页面时候需要追加 router.search 中 的[key]数组  默认不追加
 		};
 		this.config = $.extend({},_config,config);
 		this.tpls = {
@@ -71,21 +72,45 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 					var where = {};
 					cfg.search.options.forEach(function(option){
 						var value = '';
+						let more_name = false;
 						if(option.type == 'input' || option.type == 'bldate' || option.type == 'cas' || option.type == 'xm_select')
 						{
 							value = $('input[name="'+option.name+'"]').val();
 						}else if(option.type == 'pickerx' || option.type == 'select_single')
 						{
-							value = $("select[name='"+option.name+"'] option:selected").val();
+							if(option.name.indexOf(',') != -1)
+							{
+								more_name = true;
+								let opt_name_arr = option.name.split(',');
+								opt_name_arr.forEach(function(v){
+									if($("select[name='"+v+"']").length > 0)
+									{
+										value = encodeURI($("select[name='"+v+"'] option:selected").val());
+										items.push(v+'='+value);
+										where[v] = value;
+										has_name.push(v);
+									}
+								});
+							}else
+							{
+								value = $("select[name='"+option.name+"'] option:selected").val();
+							}
+							
 						}
 						
 						if(option.encode || (option.type == 'cas' || option.type == 'keyword' || option.type == 'bldate'))
 						{
 							value = encodeURI(value);
 						}
-						where[option.name] = value;
-						has_name.push(option.name);
-						items.push(option.name+'='+value);
+						if(!more_name)
+						{
+							where[option.name] = value;
+							has_name.push(option.name);
+							items.push(option.name+'='+value);
+						}
+						
+						
+						
 					});
 					//将路由的参数预设进来
 					let rsearch = layui.sa.router()['search'];
@@ -167,11 +192,22 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 			
 			//添加路由参数
 			let rsearch = layui.sa.router()['search'];
+			let post_param = {};
+			if(cfg.post_param)
+			{
+				for(var i in rsearch)
+				{
+					if($.inArray(i,cfg.post_param) > -1)
+					{
+						post_param[i] = rsearch[i];
+					}
+				}
+			}
 			
 			if(cfg.post_type == 'open')
 			{
 				layui.sa.open({
-					data:layui.$.extend({},rsearch,{id:id}),
+					data:layui.$.extend({},post_param,{id:id}),
 					area:cfg.area?cfg.area:false,
 					url:post_page,
 					title:'编辑添加',
@@ -183,9 +219,9 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 			{
 				//默认进行页面跳转编辑
 				let hash_par = ['id='+id];
-				for(var i in rsearch)
+				for(var i in post_param)
 				{
-					hash_par.push([i+'='+rsearch[i]]);
+					hash_par.push([i+'='+post_param[i]]);
 				}
 				location.hash = '#/'+post_page+'?'+hash_par.join('&');
 			}
@@ -280,13 +316,67 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 				//在第一页的时候初始化搜索组件
 				if(!self.is_init)
 				{
+					//先组装按钮 然后检测是否需要插入到options中
 					var options = [];
-					pageConfig.search.options.forEach(function(value){
+					var buttons = [];
+					pageConfig.search.buttons.forEach(function(value){
+						if(typeof value == 'string')
+						{
+							if(self.buttons[value])
+							{
+								value = self.buttons[value];
+							}else
+							{
+								return true;
+							}
+						}
+					
+						var s_id = sa.random('se_');
+					
+						var button = '<a id="'+s_id+'" title="'+(value.tip?value.tip:(value.title?value.title:''))+'" href="javascript:;"><button class="layui-btn '+(value.classname?value.classname:'')+'">';
+						if(value.icon)
+						{
+							button += '<i class="layui-icon '+value.icon+'" style="'+(value.title?'':'margin-right:0;')+'"></i>';
+						}
+						if(value.title)
+						{
+							button += value.title;
+						}
+						button += '</button></a>';
+						if(typeof value.func == 'function')
+						{
+							$('body').on('click','#'+s_id,function(){
+								value.func(pageConfig);
+							});
+						}
+						buttons.push(button);
+						
+					});
+
+					let more_button = '<span class="layui-unselect layui-tab-bar" title="更多"><i class="layui-icon"></i></span>';
+					let is_more = false;//增加搜索栏 面板展开收缩设置 这个是第一个br出现的时候会 设置为true
+					
+					pageConfig.search.options.forEach(function(value,value_index){
 						var option = '';
 						
 						//检测url是否有参数
+						if(value.name.indexOf(',') != -1)
+						{
+							let more_value = [];
+							value.name.split(',').forEach(function(v){
+								more_value.push(decodeURI(sa.getValue(router.search[v])));
+							});
+							var r_value = more_value.join(',');
+						}else
+						{
+							var r_value = sa.getValue(router.search[value.name]);
+						}
 						
-						var r_value = sa.getValue(router.search[value.name]);
+						if(!r_value && value.value)
+						{
+							r_value = value.value;//预设默认值
+						}
+						
 						var placeholder = sa.getValue(value.placeholder);
 						
 						//手动设置了uri转码 当页面刷新时需要解码 
@@ -368,50 +458,48 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 						{
 							style += ';width:'+value.width;
 						}
-						option = '<div class="layui-input-inline search_item" style="'+style+'">'+option+'</div>';
-						options.push(option);
-					});
-					var buttons = [];
-					pageConfig.search.buttons.forEach(function(value){
-						if(typeof value == 'string')
+						//新增搜索项的label
+						if(value.label)
 						{
-							if(self.buttons[value])
+							option = '<div class="layui-input-inline" style="'+((value_index > 0 && !pageConfig.search.options[value_index-1].br)?'padding-left:6px;':'')+'"><div class="layui-input-inline">'+value.label+'</div>'+'<div class="layui-input-inline search_item" style="'+style+'">'+option+'</div></div>';
+						}else
+						{
+							option = '<div class="layui-input-inline search_item" style="'+style+'">'+option+'</div>';
+						}
+						if(value.br)
+						{
+							if(!is_more)
 							{
-								value = self.buttons[value];
+								//插入按钮 组件
+								option += '<div class="layui-input-inline search_item">'+buttons.join('')+'</div><br />';
+								option += more_button + '<div class="sa_more_options">';
+								$("#"+pageConfig.form_id).parent().addClass('search_more');
+								is_more = true;
 							}else
 							{
-								return true;
+								option += '<br />';
 							}
+							
 						}
-					
-						var s_id = sa.random('se_');
-					
-						var button = '<a id="'+s_id+'" href="javascript:;"><button class="layui-btn '+(value.classname?value.classname:'')+'">';
-						if(value.icon)
-						{
-							button += '<i class="layui-icon '+value.icon+'"></i>';
-						}
-						if(value.title)
-						{
-							button += value.title;
-						}
-						button += '</button></a>';
-						if(typeof value.func == 'function')
-						{
-							$('body').on('click','#'+s_id,function(){
-								value.func(pageConfig);
-							});
-						}
-						buttons.push(button);
 						
+						
+						options.push(option);
 					});
-					if(buttons.length > 0)
+					
+					if(!is_more)
 					{
 						options.push('<div class="layui-input-inline search_item">'+buttons.join('')+'</div>');
+					}else
+					{
+						options.push('</div>');
 					}
+					
 					if(options.length > 0)
 					{
 						$("#"+pageConfig.form_id).html(options.join(''));
+						$("#"+pageConfig.form_id).find(".layui-tab-bar").click(function(){
+							$("#"+pageConfig.form_id).parent().toggleClass('search_more');
+						});
 					}else
 					{
 						//$("#"+pageConfig.form_id).parent().hide();

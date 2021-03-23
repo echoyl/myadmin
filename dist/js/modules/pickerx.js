@@ -141,7 +141,7 @@
 			//selectname = 
 		}else
 		{
-			while(selectname.length > select_length)
+			while(selectname.length > select_length + 1)
 			{
 				selectname.shift();
 			}

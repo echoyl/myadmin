@@ -32,10 +32,18 @@ layui.extend({
 					name: prop_name,
 					value: prop_value,
 				},
+				height: 'auto',
 				theme: {
 					color: '#8799a3',
 				},
-				data: data_list
+				data: data_list,
+				tree: {
+					show: true,
+					showFolderIcon: true,
+					showLine: true,
+					indent: 20,
+					expandedKeys: true,
+				}
 			})
 			
 			$(this).removeClass(r.name);

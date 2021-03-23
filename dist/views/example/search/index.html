@@ -1,13 +1,3 @@
-
-
-<div class="layui-card layadmin-header">
-	<div class="layui-breadcrumb" lay-filter="breadcrumb">
-		<a lay-href="">主页</a>
-		<a><cite>搜索列表</cite></a>
-		<a><cite>示例</cite></a>
-	</div>
-</div>
-
 <style type="text/css">
 .site-demo-code {
     width: 100%;
@@ -77,9 +67,10 @@ layui.searchRender = function(){
 		page_config.search = {
 			options:[
 				//筛选项
-				{name:'category_id',list_name:'categorys',type:'pickerx'},
+				{name:'category_id',list_name:'categorys',type:'pickerx','label':'信息分类：'},
 				{
-					name:'keyword',encode:true,type:'input',width:'300px;'
+					name:'keyword',encode:true,type:'input',width:'140px;',
+					br:true,label:'搜索关键字：'
 				},
 				{
 					name:'date',type:'bldate',data_type:'date',width:'200px;'
@@ -93,6 +84,7 @@ layui.searchRender = function(){
 					,params:{
 						'data-id':'cid','data-name':'title',placeholder:'请选择'
 					}
+					
 				},
 				{
 					name:'more_id',type:'xm_select',data_list:[

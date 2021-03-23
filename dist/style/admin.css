@@ -196,7 +196,7 @@ html {
     line-height: 50px;
     margin-bottom: 0;
     border-radius: 0;
-	margin-left:15px;
+	margin-left:10px;
 	background:none;
 	box-shadow:none;
 }
@@ -624,6 +624,29 @@ html{
     height:auto;
 	padding:8px 15px;
 	border-bottom: 1px solid #f6f6f6;
+	position:relative;
+}
+.layui-search-header-auto.search_more{
+    /*height:36px;*/
+}
+.layui-search-header-auto .layui-tab-bar{
+	height:36px;
+	top:10px;
+	right:15px;
+	line-height:36px;
+}
+.layui-search-header-auto.search_more .layui-tab-bar .layui-icon{
+    top:1px;
+	-webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+.layui-search-header-auto.search_more .sa_more_options{
+	display:none;
+}
+.layui-search-header-auto .layui-tab-bar .layui-icon{
+	top:1px;
+	-webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 .layui-search-header-auto .search_item{
 	margin-top:2px;
@@ -637,6 +660,8 @@ html{
 .layui-input-block{
 	margin-left:130px;
 }
+.layui-fluid{padding:0 10px;}
+
 /*! CSS Used from: Embedded */
 .layui-layer-admin .layui-layer-title{background-color:#20222A!important;}
 
