@@ -403,7 +403,14 @@ layui.define(["table", "layer","form",'render','laytpl'], function(exports) {
 						let params = [];
 						for(var i in value.params)
 						{
-							params.push(i+'="'+value.params[i].toString()+'"');
+							if(typeof value.params[i] == 'object')
+							{
+								//如果参数是数组或者object的话
+								params.push(i+"='"+JSON.stringify(value.params[i])+"'");
+							}else
+							{
+								params.push(i+"='"+value.params[i].toString()+"'");
+							}
 						}
 						ext_params = params.join(' ');
 						

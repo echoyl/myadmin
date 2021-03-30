@@ -32,7 +32,8 @@ layui.define(['laydate'],function(exports) {
 			var type = sa.getValue($(this).attr('data-type'));
 			var isRange = sa.getValue($(this).attr('data-range'));
 			var format = sa.getValue($(this).attr('data-format'));
-			
+			//重新引入 参数都放在同一个json中
+			let pars = sa.json(sa.getValue($(this).attr('sa-pars')));
 			if(type)
 			{
 				if(!format)
@@ -51,30 +52,29 @@ layui.define(['laydate'],function(exports) {
 				
 				if(isRange)
 				{
-					laydate.render({
+					pars = $.extend({},{
 						elem: '.layui-layout-body #'+id,
 						type:type
 						,range:isRange
 						,format:format
-					});
+					},pars);
 				}else
 				{
-					laydate.render({
+					pars = $.extend({},{
 						elem: '.layui-layout-body #'+id,
 						type:type,
 						format:format
-					});
+					},pars);
 				}
 				
 			}else
 			{
-				console.log('@@@3');
-				laydate.render({
+				pars = $.extend({},{
 					elem: '.layui-layout-body #'+id,
 					type:'date'
-				});
+				},pars);
 			}
-			
+			laydate.render(pars);
 			$(this).removeClass('bldate');
 		});
 	}
