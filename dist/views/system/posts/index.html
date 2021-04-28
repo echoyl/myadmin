@@ -1,23 +1,5 @@
 <script type="text/html" tpl lay-done="layui.copyPage(d);"></script>
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-		<div class="layui-col-md12">
-			<div class="layui-card">
-				<div class="layui-search-header-auto">
-					<form class="layui-form" id="search_form" onsubmit="return false;">
-				
-					</form>
-				</div>
-				<div class="layui-card-body" style="padding-top:0;">
-					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
-				</div>
-				<div class="layui-card-body layui-row layui-col-space20" style="padding-top:0;padding-bottom:10px;" id="result_html">
 
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
 <script>
 layui.copyPage = function(d){
 	//return;
@@ -25,11 +7,13 @@ layui.copyPage = function(d){
 	layui.use(['searchlist'], function(){
 		
 		var page_config = {
-			url:d.page_info.request_url?d.page_info.request_url:'posts',
 			page:d.page_info.page_url,
 			page_post:d.page_info.page_post?d.page_info.page_post:'',
-			where:{page_info:d.page_info},
 			post_type:'',//open为弹出层编辑模式 否则是跳转页面编辑
+			table:{
+				url:d.page_info.request_url?d.page_info.request_url:'posts',
+				where:{page_info:d.page_info},
+			}
 		};
 		
 		var sl = layui.searchlist;
@@ -39,7 +23,7 @@ layui.copyPage = function(d){
 		page_config.search = d.page_info.search?d.page_info.search:{
 			options:[
 				//筛选项
-				{name:'category_id',list_name:'categorys',type:'pickerx'},
+				{name:'category_id',data_name:'categorys',type:'sa_picker',params:{sa_pars:{empty:'全部'}}},
 				{name:'keyword',encode:true,type:'input'}
 			],
 			buttons:[
@@ -55,8 +39,8 @@ layui.copyPage = function(d){
 			,{field: 'title', title: '标题', width:300}
 			,{field: 'category.title', title: '分类', width:120}
 			,{field: 'created_at', title: '添加时间', width:180}
-			,{field:'displayorder',sort: true, edit:'text',width:'100', title: '排序'}
-			,{field: 'status', title: '状态', width: 100, sort: true}
+			,{field:'displayorder',sort: true, edit:'text',width:100, title: '排序'}
+			,{field: 'status', title: '状态', width: 100, sa_filter:{field:'status'}}
 			,{field: 'edit', title: '操作'}
 		]
 		sl.render(page_config);

@@ -7,13 +7,9 @@ layui.extend({
 	var laytpl = layui.laytpl;
 	var sa = layui.sa;
 	
-	console.log(layui.router().path.length);
-	
-	
-	
 	//初始化页面
-	function init()
-	{
+	(function(){
+		console.log('项目开始');
 		layui.link(env.base + "style/admin.css");//加载后台样式
 		//加载字体样式
 		env.fonts.forEach(function(v){
@@ -22,8 +18,10 @@ layui.extend({
 		});
 		//预加载一些click事件
 		var $body = $('body');
-		$body.on("click", "*[a-href]", function() {
+		$body.on("click", "*[a-href]", function(event) {
 			location.hash = sa.correctRouter($(this).attr('a-href'));
+			event.stopPropagation();
+			return false;
 		});
 		
 		var _sa = new sa();
@@ -40,9 +38,6 @@ layui.extend({
 		
 		_sa.hashChange();
 		
-	}
-	
-	
-	init();
+	})();
 	exports("main", {});
 });

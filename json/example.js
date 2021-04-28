@@ -3,22 +3,27 @@
 	,"msg": ""
 	,"data":{
 		"select":{
-			"simple":["选择文字1","选择文字2","选择文字3","默认选中文字"],
+			"simple":"选择文字1,选择文字2,选择文字3,默认选中文字",
 			"id":[{"id":"1","name":"选项Id1"},{"id":"2","name":"选项Id2"},{"id":"3","name":"选项Id3"},{"id":"4","name":"默认选中Id"}],
-			"customer":[{"cid":"1","title":"指定字段1"},{"cid":"2","title":"指定字段2"},{"cid":"3","title":"指定字段3"},{"cid":"4","title":"默认选中字段"}]
+			"customer":[
+				{"cid":"1","title":"指定字段1","child":[{"cid":5,"title":"子项1","child":[{"cid":6,"title":"子项111"}]}]},
+				{"cid":"2","title":"指定字段2"},
+				{"cid":"3","title":"指定字段3"},
+				{"cid":"4","title":"默认选中字段"}
+			]
 		},
-		"pickerx":[
-			{"name":"第一列1","id":"1","parent_id":0,"children":[
-					{"name":"第二列1","id":"2","children":[
-						{"name":"第三列1","id":"5"},
-						{"name":"第三列2","id":"6"}
+		"picker":[
+			{"title":"第一列1","id":"1","child":[
+					{"title":"第二列1","id":"2","child":[
+						{"title":"第三列1","id":"5"},
+						{"title":"第三列2","id":"6"}
 					]},
-					{"name":"第二列2","id":"3"},
-					{"name":"第二列3","id":"4"}
+					{"title":"第二列2","id":"3"},
+					{"title":"第二列3","id":"4"}
 				]
 			},
 			{
-				"name":"第一列2","id":"7","parent_id":0,"children":[]
+				"title":"第一列2","id":"7"
 			}
 		],
 		"option":{

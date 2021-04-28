@@ -10,88 +10,37 @@ layui.extend({
 	};
 	
 	let render_more = [
-		{
-			name:'pickerx',
-			path:"js/modules/render/pickerx",
-		},
-		{
-			name:'select_single',
-			path:"js/modules/render/select_single"
-		},
-		{
-			name:'attachment',
-			path:"js/modules/render/attachment"
-		},
-		{
-			name:'bldate',
-			path:"js/modules/render/bldate"
-		},
-		{
-			name:'tinymce',
-			path:"js/modules/render/tinymce"
-		},
-		{
-			name:'cas',
-			path:"js/modules/render/cas"
-		},
-		{
-			name:'clipboard',
-			path:"js/modules/render/clipboard"
-		},
-		{
-			name:'blmap',
-			path:"js/modules/render/blmap"
-		},
-		{
-			name:'bloption',
-			path:"js/modules/render/bloption"
-		},
-		{
-			name:'sa_query',
-			path:"js/modules/render/sa_query"
-		},
-		{
-			name:'input_tags',
-			path:"js/modules/render/input_tags"
-		},
-		{
-			name:'xm_select',
-			path:"js/modules/render/xm_select"
-		},
-		{
-			name:'sa_radio',
-			path:"js/modules/render/sa_radio"
-		}
-		,
-		{
-			name:'sa_images',
-			path:"js/modules/render/sa_images"
-		}
+		'pickerx','attachment','bldate','tinymce','cas','clipboard','blmap','bloption','sa_query','input_tags','xm_select','sa_radio','sa_images','sa_picker'
 	];//加载样式渲染直接绑定模块
 	
 	r.init = function()
 	{
-		console.log("render init");
 		render_more.forEach(function(v){
-			var _extend = {}
-			var name = v.name + '_r';//添加render的名称后缀
-			_extend[name] = v.path;
-			//console.log(_extend);
+			var _extend = {},name = '',classname = '';
 			
+			if(typeof v == 'string')
+			{
+				name = v + '_r';//添加render的名称后缀
+				_extend[name] = "js/modules/render/"+v;
+				classname = v;
+			}else
+			{
+				name = v.name + '_r';//添加render的名称后缀
+				_extend[name] = v.path;
+				classname = v.name;
+			}
 			//检测有没有name的class的dom 有的话去渲染
 			
-			if($("."+v.name).length > 0)
+			if($("."+classname).length > 0)
 			{
 				if(typeof layui.modules[name] == 'undefined' || !layui.modules[name])
 				{
 					//去加载
-					console.log('加载：'+name);
 					layui.extend(_extend).use(name,function(){
 						layui[name].init();
 					});
 				}else
 				{
-					console.log('加载使用：'+name);
 					layui.use(name,function(){
 						layui[name].init();
 					});
@@ -155,9 +104,6 @@ layui.extend({
 					break;
 				}
 			})
-			//userinfo 点击
-			
-			
 		}
 		r.isinit = true;
 	}

@@ -1,0 +1,104 @@
+<style type="text/css">
+.site-demo-code {
+    width: 100%;
+    min-height: 700px;
+    border: none;
+    padding: 10px;
+    resize: none;
+    font-size: 12px;
+    background-color: #F7FBFF;
+    color: #881280;
+    font-family: Courier New;
+	tab-size:4;
+}
+</style>
+
+<script id="searchlist_pars" type="text/html">
+/*多级分类列表
+*主要是layui没有treetable 然后第三方的
+*的用起来一般，这里就直接通过获取数据然后
+*组装数据后 再使用 searchlist 来显示
+*参数对照 searchlist的来就行了
+*就是将所有的数据都取去，不做分页处理
+*/
+var page_config = {
+	page:'example/search/'//当前页面的路径
+	,page_post:'example/search/post'//添加或修改页面的路径
+	,table:{//layui.table的参数可以复写在这里
+		url:'news/news'//列表请求地址路由
+	},
+	title:'title',//分类名的字段
+	child:'children',//子集的字段名称
+	pre:'　├　',//子集默认加的前缀
+};
+//搜索栏+按钮定义
+page_config.search = {
+	buttons:[
+		//按钮
+		'add'//默认添加数据按钮
+		,'delete'//默认删除数据按钮
+		,{//自定义按钮 格式如下
+			icon:'',//icon的名字
+			title:'查看参数详情',//按钮显示文字
+			classname:'layui-btn layui-btn-primary layui-border-green show_pars',//按钮的样式名
+			func:function(cfg){//点击按钮事件 cfg为searchlist的config数据
+				//do somethings
+			}
+		}
+	]
+};
+//这里的每行设置的 lay-event 需要在 page_config.event 中定义
+//定义多少层级 在 field=edit中的param.level中设定
+page_config.cols = [ //表头
+	{field: '', title: '', width:80, type:'checkbox'}
+	,{field:'id',width:100, title: 'id'}
+	,{field:'title',width:300, title: '名称'}
+	,{field:'displayorder', edit:'text',width:100, title: '排序'}
+	,{field: 'status', title: '状态', width: 90}
+	,{field: 'edit', title: '操作',param:{level:3}}
+];
+layui.sa_category.render(page_config);
+</script>
+<script id="code">
+(function(){
+	layui.use(['sa_category'], function(){
+		
+		var page_config = {
+			page:'example/category/',
+			post_type:'open',
+			table:{
+				url:'category',
+			}
+		};
+		
+		var $ = layui.$;
+		
+		page_config.search = {
+			buttons:[
+				//按钮
+				'add','delete',{
+					icon:'',
+					title:'查看参数详情',
+					classname:'layui-btn layui-btn-primary layui-border-green show_pars',
+					func:function(cfg){
+						//添加默认打开新页面
+						var content = $("#searchlist_pars").html();
+						layui.sa.alert('<pre class="layui-code">'+content+'</pre>');
+					}
+				}
+			]
+		};
+		
+		
+		page_config.cols = [ //表头
+			{field: '', title: '', width:80, type:'checkbox'}
+			,{field:'id',width:100, title: 'id'}
+			,{field:'title',width:300, title: '名称'}
+			,{field:'displayorder', edit:'text',width:100, title: '排序'}
+			,{field: 'status', title: '状态', width: 90}
+			,{field: 'edit', title: '操作',param:{level:3}}
+		];
+		layui.sa_category.render(page_config);
+	});
+})();
+</script>

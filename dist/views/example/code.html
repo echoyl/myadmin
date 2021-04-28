@@ -35,9 +35,13 @@
 						<li>弹层搜索页面</li>
 						<li>复制页面</li>
 						<li>php-Controller</li>
+						<li>项目部署</li>
 					</ul>
 					<div class="layui-tab-content">
 						<div class="layui-tab-item layui-show">	
+							<textarea class="layui-border-box site-demo-text site-demo-code" spellcheck="false" readonly=""></textarea>
+						</div>
+						<div class="layui-tab-item">
 							<textarea class="layui-border-box site-demo-text site-demo-code" spellcheck="false" readonly=""></textarea>
 						</div>
 						<div class="layui-tab-item">
@@ -128,34 +132,13 @@
 	</div>
 </div>
 
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-		<div class="layui-col-md12">
-			<div class="layui-card">
-				<div class="layui-search-header-auto">
-					<form class="layui-form" id="search_form" onsubmit="return false;">
-				
-					</form>
-				</div>
-				<div class="layui-card-body" style="padding-top:0;">
-					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
-				</div>
-				
-				<div class="layui-card-body layui-row layui-col-space20" style="padding-top:0;padding-bottom:10px;" id="result_html">
-
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
-
 <script>
 
 (function(){
 	layui.use(['searchlist'], function(){
 	
 		let page_config = {
-			url:'user/wxapp',
+			table:{url:'user/wxapp'},
 			page:'user/wxapp/',
 			page_post:'user/wxapp/post',
 			post_type:'open',//open为弹出层编辑模式 否则是跳转页面编辑
@@ -192,30 +175,14 @@
 
 <!--分类列表-->
 <script type="text/html" class="code_example">
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-		<div class="layui-col-md12">
-			<div class="layui-card">
-				<div class="layui-search-header-auto">
-					<form class="layui-form" id="search_form" onsubmit="return false;">
-						 
-					</form>
-				</div>
-				<div class="layui-card-body" style="padding-top:0;">
-					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
 
 <script>
 
 (function(){
-	layui.use(['categoryList'], function () {
+	layui.use(['sa_category'], function () {
 	
 		let page_config = {
-			url:'category',
+			table:{url:'category'},
 			page:'category/index/',
 			page_post:'category/index/post',
 			post_type:'open',//编辑方式为弹出层
@@ -236,7 +203,7 @@
 			,{field: 'status', title: '状态', width: 90}
 			,{field: 'edit', title: '操作',param:{level:3}}
 		]
-		layui.categoryList.render(page_config);
+		layui.sa_category.render(page_config);
 		
 	});
 })();
@@ -434,28 +401,14 @@ layui.categoryOpen = function(d){
 <!--弹层搜索页面-->
 <script type="text/html" class="code_example">
 <script type="text/html" tpl lay-done="layui.queryDone(d);"><end_script>
-<div class="layui-card">
-	<div class="layui-search-header-auto">
-		<form class="layui-form" id="open_form_id" onsubmit="return false;">
-	
-		</form>
-	</div>
-	<div class="layui-card-body" style="padding-top:0;">
-		<table id="open_search_list" lay-filter="open_search_list"></table>
-	</div>
-</div>
 <script>
 layui.queryDone = function(d){
-	var firstIndex = layer.index;
-	layui.use(['searchlist'], function(){
+	
+	layui.use(['searchlist','layer'], function(){
 		d.param = d.param?d.param:{};
+		var firstIndex = layer.index;
 		let page_config = {
-			url:'posts',
-			tableId:"open_search_list",
-			form_id:"open_form_id",
-			size:"mid",
-			height:394,
-			page_zie:8,
+			table:{url:'posts',size:"mid",height:394,page:{limit:8}},
 			open:true,
 			event:{
 				chose:function(data){
@@ -490,7 +443,7 @@ layui.queryDone = function(d){
 				classname:'',
 				func:function(cfg){
 					//添加默认打开新页面
-					let selected = layui.table.checkStatus('open_search_list');
+					let selected = layui.sa_table.checkStatus('open_search_list');
 					if(selected.data.length > 0)
 					{
 						layui.sa.close(selected.data,firstIndex);
@@ -564,5 +517,13 @@ class WxappController extends CrudController
 	}
 }
 
+</script>
+
+<script type="text/html" class="code_example">
+//纯属 ctrl c ctrl v
+
+/www/server/php/73/bin/php composer.phar update
+
+/www/server/php/73/bin/php artisan storage:link
 </script>
 

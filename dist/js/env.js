@@ -67,7 +67,7 @@ layui.define(function(exports) {
 		,
 		layout:'system/layout',
 		extend: [],
-		fonts:['rr'],//加载字体
+		fonts:['rr','iconfont'],//加载字体
 		bmap_ak:'srA5yxQDsKtgxazvx0jCNhW56uCnWFoV',
 		is_local:true
 	});

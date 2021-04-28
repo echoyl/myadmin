@@ -1,24 +1,17 @@
 <script type="text/html" tpl lay-done="queryRender(d);"></script>
-<div class="layui-row">
-	<table id="search_category" lay-filter="search_category" lay-size="lg"></table>
-</div>
 <script>
 function queryRender(d){
-	layui.use(['categoryList','table','layer'], function () {
+	layui.use(['sa_category'], function () {
 		var firstIndex = layui.layer.index;
 		var page_config = {
-			url:'category',
-			tableId:'search_category',
-			where:d.param,
-			size:'mid'
+			table:{url:'category',where:d.param,size:'mid'},
+			open:true
 		};
-		
-		var sl = layui.categoryList;
-		var $ = layui.$;
+	
 		
 		page_config.cols = [ //表头
-			{field:'id',width:'100', title: 'id'}
-			,{field:'title',width:'300', title: '名称'}
+			{field:'id',width:100, title: 'id'}
+			,{field:'title',width:300, title: '名称'}
 			,{field: '', title: '操作',templet:'<a class="layui-btn layui-btn-xs" lay-event="chose">选择</a>'}
 		];
 		page_config.event = {
@@ -27,7 +20,7 @@ function queryRender(d){
 				layui.sa.close([data],firstIndex);
 			}
 		};
-		sl.render(page_config);
+		layui.sa_category.render(page_config);
 	});
 }
 

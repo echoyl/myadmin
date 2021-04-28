@@ -1,33 +1,8 @@
-<title>后台用户列表</title>
-<div class="layui-card layadmin-header">
-  <div class="layui-breadcrumb" lay-filter="breadcrumb">
-    <a a-href="">主页</a>
-    <a><cite>后台用户</cite></a>
-	<a><cite>后台用户列表</cite></a>
-  </div>
-</div>
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-		<div class="layui-col-md12">
-			<div class="layui-card">
-				<div class="layui-search-header-auto">
-					<form class="layui-form" id="search_form" onsubmit="return false;">
-					
-					</form>
-				</div>
-				<div class="layui-card-body" style="padding-top:0;">
-					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
-
 <script>
 (function(d){
 	layui.use(['searchlist'], function(){
 		var page_config = {
-			url:'perm/user',
+			table:{url:'perm/user'},
 			page:'perm/user/',
 			page_post:'perm/user/post'
 		};

@@ -1,11 +1,13 @@
 layui.extend({
+	sa_table:'js/modules/sa/table',
 	searchlist: "js/modules/searchlist",
 	treeGrid:"js/modules/treeGrid/treeGrid",
 	categoryList:"js/modules/categoryList",
 	render:'js/modules/render',
 	echartsTheme:'js/modules/echarts/echartsTheme',
 	echarts:'js/modules/echarts/echarts',
-	sa_upload:'js/modules/sa_upload'
+	sa_upload:'js/modules/sa_upload',
+	sa_category:'js/modules/sa/category'
 }).define(["laytpl", "layer",'render'], function(exports) {
 	
 	var $ = layui.$,
@@ -20,8 +22,21 @@ layui.extend({
 	f.app_id = 'LAY_app';
 	f.inited = false;
 	f.request_status = false;
+	f.ids = [];
 	//cccv 类
 	var sa = function(e){
+		if(e)
+		{
+			f.ids.push(e);
+		}else
+		{
+			if(f.ids.length < 1)
+			{
+				//非reload才添加id
+				f.ids.push(f.app_body_id);
+			}
+		}
+		
 		this.container = $("#"+(e || f.app_body_id));
 		this.id = e;
 		
@@ -35,7 +50,6 @@ layui.extend({
 	f.getAccessToken = function()
 	{
 		var token = f.local.get(env.request.tokenName);
-		//console.log(token);
 		if(!token)
 		{
 			return '';
@@ -43,8 +57,6 @@ layui.extend({
 		return token;
 	}
 	f.request = function(param) {
-		//console.log(param);
-		
 		var request = env.request;
 		var response = env.response;
 		var error_msg = env.debug?"<br><cite>URL：</cite>" + param.url : "";
@@ -60,11 +72,8 @@ layui.extend({
 			}
 			f.request_status = true;
 		}
-		//console.log('layer.index:'+layui.layer.index);
 		f.loading();
 		var router = f.router();
-		//console.log('记录post数据');
-		//console.log(typeof param.data);
 		if(typeof param.processData == 'undefined')
 		{
 			var pdata = $.extend({},router.search,param.data,{v:layui.cache.version});
@@ -73,8 +82,7 @@ layui.extend({
 		{
 			var pdata = param.data;
 		}
-		
-		//console.log(param.type);
+
 		$.ajax($.extend({},param,{
 			headers:{
 				'Authorization':'Bearer '+f.getAccessToken()
@@ -84,7 +92,6 @@ layui.extend({
 			dataType: "json",
 			data: pdata || {},
 			success: function(res) {
-				//console.log(res);
 				f.removeLoading();
 				if(param.type == 'post')
 				{
@@ -95,7 +102,6 @@ layui.extend({
 				{
 					if("function" == typeof param.done)
 					{
-						//console.log('done done done')
 						param.done(res);
 					}
 				}else if (res[response.statusName] == response.statusCode.logout)
@@ -130,6 +136,11 @@ layui.extend({
 	//仅仅只是修改hash而不做重载页面
 	f.justHashChange = function(hash)
 	{
+		//检测现有的hash和下一个hash是否一致
+		if(location.hash == hash)
+		{
+			return;
+		}
 		f.local.set('hash_not_reload',1,360000000);
 		location.hash = hash;
 	}
@@ -137,10 +148,10 @@ layui.extend({
 	sa.prototype.hashChange = function(c_flag)
 	{
 		//页面路径变化后调用
+		
 		var t = this;
 		var router = f.router();
 		var path = router.path;
-		
 		if(path.length == 0)
 		{
 			path = [env.entry];
@@ -165,17 +176,18 @@ layui.extend({
 		if(f.local.get('hash_not_reload'))
 		{
 			f.local.set('hash_not_reload',0,360000000);
-			return;
+			if(f.inited)
+			{
+				console.log('inited and has not reload');
+				return;
+			}
 		}
-		
-		
 		var check_login = false;
 		if(!f.inited && !t.ind_page)
 		{
 			filename = env.layout;
 			check_login = true;
 		}
-		//console.log(filename);
 		//判断容器
 		if(t.ind_page || !f.inited)
 		{
@@ -186,6 +198,7 @@ layui.extend({
 		}
 
 		f.loading(t.container);
+		f.methods = {};//页面变化后充值方法对象
 		//添加判断如果是加载layout需要先检测一下是否已经登录了
 		f.checkLogin(check_login,function(){
 			t.render(filename,{},function() {
@@ -194,7 +207,6 @@ layui.extend({
 					//加载默认首页
 					f.inited = true;
 					f.getMenu();
-					//console.log('init');
 					t.hashChange();
 					return;
 				}
@@ -207,7 +219,6 @@ layui.extend({
 				if(f.inited && !t.ind_page)
 				{
 					//初始化左侧的菜单
-					console.log('初始化菜单');
 					f.initMenu();
 					//自动追加bread
 					t.bread(filename);
@@ -219,11 +230,9 @@ layui.extend({
 	//自动解析面包屑 导航
 	sa.prototype.bread = function(filename)
 	{
-		//console.log($(this.container).find('.layui-breadcrumb').length);
 		if(!$(this.container).find('.layui-breadcrumb').length)
 		{
 			let menu_data = f.local.get('menu_data')['data'];
-			console.log('渲染bread');
 			let file_arr = filename.split('/');
 			let bread = [];//3级菜单
 			let is_post = 0;
@@ -249,7 +258,6 @@ layui.extend({
 					is_post = i;
 				}
 			});
-			//console.log(bread);
 			let index = is_post-1;
 			file_arr.pop();
 			let href = file_arr.join('/') + '/';
@@ -267,8 +275,6 @@ layui.extend({
 	{
 		var t = this;
 		f.loading(t.container);
-		//console.log('render');
-		
 		filename = env.views + filename + env.engine;
 
 		//return;
@@ -291,8 +297,6 @@ layui.extend({
 					var page_info = JSON.parse($(las[0]).html());
 					//t.container.html($(html).children());
 					return t.render(new_file,$.extend({},params,{page_info:page_info}),callback);
-					//console.log(new_file);
-					//return;
 				}else
 				{
 					var title_ele = $(html).find("title");
@@ -340,7 +344,6 @@ layui.extend({
 		function toHtml(v)
 		{
 			//将undefined都给去除了
-			//console.log(v.res);
 			//没有page_info 预设
 			if(!v.res.page_info)
 			{
@@ -348,7 +351,6 @@ layui.extend({
 			}
 			var html = laytpl(v.dataElem.html()).render(v.res).replace(/undefined/g,'').replace(/null/g,'');
 			v.dataElem.after(html);
-			//console.log('加载了html');
 			if("function" == typeof callback)
 			{
 				callback();
@@ -363,12 +365,8 @@ layui.extend({
 				var done = v.dataElem.attr('lay-done');
 				if(done)
 				{
-					console.log('html 回调');
 					new Function("d", done)(v.res);
 				}
-				
-				//setTimeout(function(){done && new Function("d", done)(v.res);},10);
-				
 			} catch (o) {
 				console.error(v.dataElem[0], "\n存在错误回调脚本\n\n", o)
 			}
@@ -385,13 +383,10 @@ layui.extend({
 			(function(item){
 				//var done = item.attr("lay-done");//解析完后回调函数
 				//将参数合并到 url中 例如 使用 d.search.id 可以获取到hash中 /id=2中的 2值
-				//console.log('router 是');
-				//console.log(router);
 				item.removeAttr('tpl');
 				var url = laytpl(item.attr("lay-url") || "").render(router);//这里加载路由参数进去
 				var data = laytpl(item.attr("lay-data") || "").render(router);
 				data = $.extend(router.search,f.json(data),router.params);
-				//console.log(typeof url);
 				if(!url)
 				{
 					toHtml({
@@ -453,22 +448,11 @@ layui.extend({
 		});
 		
 		router.path = path;
-		//console.log(router);
 		return router;
 	}
 	f.json = function(str)
 	{
-		var ret = {};
-		if(str)
-		{
-			try {
-				ret = JSON.parse(str);
-			} catch (d) {
-				console.error(str+' >> '+d.message);
-			}
-		}
-		
-		return ret;
+		return new Function("return " + (str || "{}"))();
 	}
 	/*
 	f.loading = function(e) {
@@ -499,7 +483,6 @@ layui.extend({
 	{
 		if($(".new_loading").length > 0)
 		{
-			//console.log('已经在loading了');
 			return;
 		}
 		if(typeof e == 'undefined')
@@ -508,7 +491,6 @@ layui.extend({
 			//在这里检测是否有弹出层，如果有的话将loding罩在弹出层上面
 			if($(".layui-layer[type=page]").length > 0)
 			{
-				//console.log('有layer');
 				e = $(".layui-layer[type=page]");
 			}
 		}
@@ -533,14 +515,12 @@ layui.extend({
 	//渲染左侧菜单
 	f.initMenu = function()
 	{
-		//console.log('init Menu');
 		var tpl = $("#menus").html();
 		var menu_data = f.local.get('menu_data');
 		var nav_fold = $(".wb-nav").hasClass('fold');//记住是否开合
 		var subnav_fold = $(".wb-subnav").hasClass('fold');
 		if(menu_data)
 		{
-			//console.log('menu cache');
 			menu_data.nav_fold = nav_fold;
 			menu_data.subnav_fold = subnav_fold;
 			laytpl(tpl).render(menu_data,function(html){
@@ -585,7 +565,6 @@ layui.extend({
 			if(wb_subnav.find('.subnav-scene').next().hasClass('menu-header '))
 			{
 				//第一个菜单是 多级的
-				console.log('多级菜单');
 				wb_subnav.find('.subnav-scene').next().click();
 				wb_subnav.find('.subnav-scene').next().next().find('li:eq(0) > a').click();
 			}else
@@ -593,8 +572,6 @@ layui.extend({
 				//单级菜单直接点击触发
 				wb_subnav.find('ul.single:eq(0) > li > a').click();
 			}
-			
-			//console.log(index);
 		});
 		$(".wb-subnav ul.single").click(function(){
 			$('ul.single').find('li').removeClass('active');
@@ -627,7 +604,6 @@ layui.extend({
 		//存储,可设置过期时间
 		set(key, value, expires) {
 			let params = { key, value, expires };
-			//console.log('set',key,new Date().getTime());
 			if (expires) {
 				// 记录何时将值存入缓存，毫秒级
 				var data = Object.assign(params, { startTime: new Date().getTime() });
@@ -646,7 +622,6 @@ layui.extend({
 		get(key) {
 			let item = localStorage.getItem(key);
 			// 先将拿到的试着进行json转为对象的形式
-			//console.log('get',key,new Date().getTime());
 			try {
 				item = JSON.parse(item);
 			} catch (error) {
@@ -678,8 +653,9 @@ layui.extend({
 	}
 	f.popup = function(e) {
 		var a = e.success,
+			c = e.close,
 			r = e.skin;
-		return delete e.success, delete e.skin, layer.open($.extend({
+		return delete e.success, delete e.skin,delete e.close, layer.open($.extend({
 			type: 1,
 			title: "提示",
 			content: "",
@@ -690,7 +666,11 @@ layui.extend({
 			success: function(e, r) {
 				var o = $('<i class="layui-icon" close>&#x1006;</i>');
 				e.append(o), o.on("click", function() {
-					layer.close(r)
+					if(typeof c == 'function')
+					{
+						c(r);
+					}
+					layer.close(r);
 				}), "function" == typeof a && a.apply(this, arguments)
 			}
 		}, e))
@@ -709,6 +689,7 @@ layui.extend({
 		},e));
 	}
 	f.open = function (opt){
+		var need_pop_function = false;//是否需要清除回调
 		if(typeof opt.callback != 'undefined')
 		{
 			if(typeof layui.frameCallback == 'function')
@@ -719,31 +700,38 @@ layui.extend({
 				layui.frameCallback.push(opt.callback);
 			}else
 			{
-				layui.frameCallback = opt.callback;
+				layui.frameCallback = [opt.callback];
 			}
+			need_pop_function = true;
 		}
-		//console.log(layui.layer.index);
-		
 		var area = opt.area?opt.area:['800px', '600px'];
 		var data = opt.data?opt.data:{};
 		var title = opt.title?opt.title:'选择框';
 		var view_url = opt.url;
-
-		
+		var id = view_url.split('/').join('_');
 		f.popup({
 			title: title,
 			area: area,
-			id: view_url.split('/').join('_'),
+			id: id,
 			success: function(e, i) {
-				var new_sa = new sa(this.id);
+				var new_sa = new sa(id);
 				new_sa.render(view_url, data);
+			},
+			shadeClose:false,
+			close:function(r){
+				//这里是点击×关闭需要的处理
+				f.ids.pop();
+				if(need_pop_function)
+				{
+					layui.frameCallback.pop();
+				}
 			}
 		});
 	}
 	
 	f.close = function(res,index){
 		//对应上面的open方法 处理回调函数逻辑
-		//console.log(index);
+		f.ids.pop();
 		if(typeof layui.frameCallback == 'function')
 		{
 			layui.frameCallback(res);
@@ -752,6 +740,7 @@ layui.extend({
 			var cb = layui.frameCallback.pop();
 			cb(res);
 		}
+		
 		layui.layer.close(index);
 	}
 	f.random = function(prev)
@@ -764,7 +753,6 @@ layui.extend({
 		img.src = $(self).attr('src');
 		w = img.width;
 		h = img.height;
-		//console.log(h+'_'+w+'_'+img.src);
 		if(w > h)
 		{
 			$(self).css({width:'154px',height:'auto'});
@@ -877,9 +865,7 @@ layui.extend({
 				type: "get",
 				dataType: "json",
 				success: function(res) {
-					//console.log(res);
 					f.removeLoading();
-					
 					if (res[response.statusName] == response.statusCode.logout)
 					{
 						is_login = false;
@@ -909,5 +895,6 @@ layui.extend({
 			title:f.getValue(title,'信息详情')
 		});
 	}
+	f.methods = {};//页面方法
 	exports("sa", f);
 })

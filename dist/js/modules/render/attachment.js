@@ -10,19 +10,17 @@
 					<div class="layui-input-inline">\
 						<div class="layui-col-space5">\
 							{{# if(d.input == 1){ }}\
-							<div class="layui-col-md8">\
+							<div class="layui-col-md10 form-input-icon">\
 								<input type="text" name="{{d.name}}" {{# if(d.required == 1){ }}lay-verify="required"{{# } }} placeholder="请选择" autocomplete="off"  value="{{d.value}}" class="layui-input">\
-							</div>\
-							<div class="layui-col-md2 attachment_delete">\
-								<a class="layui-btn layui-btn-fluid layui-btn-danger">清除</a>\
+								<i title="清除" class="icow icow-error attachment_delete"></i>\
 							</div>\
 							{{# }else{ }}\
 								{{# var aindex=d.name.indexOf("]");if(aindex > -1){var ids_name = d.name.substr(0,aindex)+"_ids"+d.name.substr(aindex);}else{var ids_name = d.name+"_ids";} }}\
 								<input type="hidden" name="{{d.name}}" value="{{d.value}}" />\
 								<!--<input type="hidden" name="{{ids_name}}" value="{{d.value}}" />-->\
 							{{# } }}\
-							<div class="layui-col-md2 attachment_button" data-name="{{d.name}}" data-file="{{d.file}}" data-limit="{{d.limit}}" data-id="sortable_{{d.id}}">\
-								<a href="javascript:;" class="layui-btn layui-btn-fluid">选择</a>\
+							<div class="layui-col-md2 attachment_button form-input-button" data-name="{{d.name}}" data-file="{{d.file}}" data-limit="{{d.limit}}" data-id="sortable_{{d.id}}">\
+								<button type="button" class="layui-btn layui-btn-fluid">选择</button>\
 							</div>\
 						</div>\
 					</div>\
@@ -70,10 +68,6 @@
 	r.init = function(){
 		
 		$(".attachment").each(function(){
-			console.log('执行attachment渲染');
-
-			//单图上传
-			//console.log($(this).data('value'));
 			var isfile = $(this).data('file');
 			var value_val = $(this).data('value')+'';
 			if(typeof isfile == 'undefined')
@@ -99,7 +93,7 @@
 				id:sa.random(),
 				image_tpl:image_tpl
 			};
-			//console.log($(this).data('valuearr'));
+
 			var this_con = this;
 			layui.laytpl(tpl).render(param,function(html){
 				$(this_con).html(html);
@@ -119,7 +113,7 @@
 					var limit = $(this).data('limit');
 					var isfile = $(this).data('file');
 					var name = $(this).data('name');
-					//console.log(isfile);
+
 					var parent_id = 'attachmentcon_'+param.id;
 					
 					var now_length  = $("#"+parent_id).find(".attachmentcon").children().length;
@@ -139,7 +133,7 @@
 						url:'system/attachment',
 						title:isfile?'文件管理':'图片管理',
 						callback:function(res){
-							//console.log(res);
+
 							layui.laytpl(image_tpl).render({list:res}, function(html){
 								if(limit == 1)
 								{

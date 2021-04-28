@@ -12,7 +12,7 @@ layui.extend({
 	r.init = function(){
 		$(".cas").each(function(){
 			cas(this);
-			$(this).removeClass('.cas');
+			$(this).removeClass('cas');
 		})
 	}
 	

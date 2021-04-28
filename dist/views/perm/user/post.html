@@ -46,7 +46,7 @@
 								<div class="layui-form-item">
 									<label class="layui-form-label">所属角色</label>
 									<div class="layui-input-inline">
-										<div class="select_single" name="base[roleid]" lay-filter="roleChange" value="{{d.data.roleid}}" placeholder="请选择角色" data-list="{{=d.data.roles}}"></div>
+										<input class="layui-input sa_picker" sa_pars='{title:"name",cb:"roleChange"}' name="base[roleid]" data-value="{{d.data.roleid}}" placeholder="请选择角色" readonly="" data-data="{{=d.data.roles}}">
 									</div>
 								</div>
 							
@@ -198,15 +198,20 @@ layui.use(['element','form','sa'], function(){
 		$(data.elem).siblings('input[type="checkbox"]').not($(data.elem).siblings('input[type="checkbox"][disabled]')).prop("checked",data.elem.checked);
 		layui.form.render();
 	});
-	form.on('select(roleChange)', function(data){
-		var role_perms = d.data.role_perms[data.value];
+	
+	sa.methods = {
+		roleChange:function(data)
+		{
+			var id = data[0].id;
+			var role_perms = d.data.role_perms[id];
 		
-		var new_data = $.extend({},d);
-		new_data.data.user_perms = role_perms;
-		new_data.data.roleid = data.value;
-		console.log(new_data);
-		renderPerms(new_data);
-	});   
+			var new_data = $.extend({},d);
+			new_data.data.user_perms = role_perms;
+			new_data.data.roleid = id;
+			console.log(new_data);
+			renderPerms(new_data);
+		}
+	}
 });
 }
 </script>

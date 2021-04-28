@@ -22,17 +22,13 @@
 								<input type="text" name="base[title]" value="{{d.data.title}}" placeholder="请输入标题" autocomplete="off" class="layui-input layui-col-md6">
 							</div>
 						</div>
-						
 						<div class="layui-form-item">
 							<label class="layui-form-label">分类选择</label>
 							<div class="layui-input-inline">
-								<div class="pickerx"
-									data-required="1"
-									data-placeholder="请选择分类" 
-									data-value="{{d.data.category_id}}" 
-									data-name="base[category_id]" data-list="{{=d.data.category_arr}}"></div>
+								<input type="text" lay-verify="required" sa_pars='{cb:"picker"}' name="base[category_id]" data-data="{{=JSON.stringify(d.data.categorys)}}" data-value="{{d.data.category_id}}"  placeholder="请选择分类" value="" readonly="" class="layui-input sa_picker">
 							</div>
 						</div>
+
 
 
 						<div class="layui-form-item">
@@ -152,6 +148,11 @@ layui.copyPage = function(d){
 			});
 			return false;
 		});
+		
+		sa.methods.picker = function(res)
+		{
+			console.log(res);
+		}
 		
 	});
 }

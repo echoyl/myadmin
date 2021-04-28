@@ -15,33 +15,33 @@ layui.define(['form'],function(exports) {
 		
 		$("."+r.name).each(function(){
 			var self = this;
-			
-			var list = layui.sa.fixJson($(self).data('list'));
+			var data = $(self).data('data');
+			var list = [];
+			if(typeof data == 'string')
+			{
+				data.split(',').forEach(function(v){
+					list.push({
+						id:v,name:v
+					});
+				});
+			}else
+			{
+				list = data;
+			}
 			var _list = [];
 			list.forEach(function(v){
-				if(typeof v == 'string')
+				var id = 'id',name = 'name';
+				if($(self).data('id'))
 				{
-					//如果是字符串数组 那么处理成 object数组进行渲染
-					var item = {
-						id:v,name:v
-					}
-				}else
-				{
-					//如果自定义设定id及value的 名称 读取自定义内容
-					var id = 'id',name = 'name';
-					if($(self).data('id'))
-					{
-						id = $(self).data('id');
-					}
-					if($(self).data('name'))
-					{
-						name = $(self).data('name');
-					}
-					var item = {
-						id:v[id],name:v[name]
-					};
+					id = $(self).data('id');
 				}
-				_list.push(item);
+				if($(self).data('name'))
+				{
+					name = $(self).data('name');
+				}
+				_list.push({
+					id:v[id],name:v[name]
+				});
 			});
 			var filter = $(self).attr('lay-filter');
 			var data = {

@@ -10,7 +10,6 @@ layui.extend({
 	var tpl = '';
 	
 	r.init = function(){
-		console.log('初始化tinymce')
 		$(".tinymce").each(function(){
 			var id = sa.random('tinymce_')
 			$(this).attr('id',id);
@@ -22,11 +21,8 @@ layui.extend({
 			},function(opt){
 				//加载完成后回调
 			});
-			//console.log(edi.ui.registry.getAll().menuItems);
 			$(this).removeClass('tinymce');
 		});
 	}
-	
-	//return;
 	exports("tinymce_r", r);
 });

@@ -1,62 +1,29 @@
-
-<div class="layui-card layadmin-header">
-  <div class="layui-breadcrumb" lay-filter="breadcrumb">
-    <a lay-href="">主页</a>
-    <a><cite>菜单管理</cite></a>
-	<a><cite>菜单列表</cite></a>
-  </div>
-</div>
-
-<style>
-.layui-tree li{height:20px;}
-</style>
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-		<div class="layui-col-md12">
-			<div class="layui-card">
-				<div class="layui-search-header-auto">
-					<form class="layui-form" id="search_form" onsubmit="return false;">
-						 
-					</form>
-				</div>
-				<div class="layui-card-body" style="padding-top:0;">
-					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
-
 <script>
-layui.use(['categoryList'], function () {
-
-	var page_config = {
-		url:'menu',
-		page:'menu/',
-		page_post:'menu/post'
-	};
-	
-	var sl = layui.categoryList;
-	var $ = layui.$;
-
-	
-	page_config.search = {
-		buttons:[
-			//按钮
-			'add','delete'
+(function(){
+	layui.use(['sa_category'], function () {
+		var page_config = {
+			table:{url:'menu'},
+			page:'menu/',
+			page_post:'menu/post'
+		};
+		
+		page_config.search = {
+			buttons:[
+				//按钮
+				'add','delete'
+			]
+		};
+		
+		page_config.cols = [ //表头
+			{field: '', title: '', width:80, type:'checkbox'}
+			,{field:'id',width:100, title: 'id'}
+			,{field:'title',width:300, title: '名称'}
+			,{field:'displayorder', edit:'text',width:100, title: '排序'}
+			,{field: 'status', title: '状态', width: 90}
+			,{field: 'edit', title: '操作',param:{level:3}}
 		]
-	};
-	
-	page_config.cols = [ //表头
-		{field: '', title: '', width:80, type:'checkbox'}
-		,{field:'id',width:'100', title: 'id'}
-		,{field:'title',width:'300', title: '名称'}
-		,{field:'displayorder', edit:'text',width:'100', title: '排序'}
-		,{field: 'status', title: '状态', width: 90}
-		,{field: 'edit', title: '操作',param:{level:3}}
-	]
-	sl.render(page_config);
+		layui.sa_category.render(page_config);
 
-});
-	
+	});
+})();
 </script>

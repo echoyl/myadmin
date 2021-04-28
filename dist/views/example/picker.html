@@ -1,0 +1,261 @@
+<div class="layui-fluid">
+	<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<form class="layui-form" lay-filter="form_post">
+					<script type="text/html" id="code" tpl lay-url="./json/example.js?a=2" lay-done="layui.exampleRender(d);">
+						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+							<legend>选择器</legend>
+						</fieldset>
+						<div class="layui-form-item">
+							<label class="layui-form-label">picker参数详细</label>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" data-id="#picker_pars" class="layui-btn layui-btn-primary layui-border-green show_pars">查看</a>
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">简单选择</label>
+							<div class="layui-input-inline">
+								<input class="layui-input sa_picker" name="select_id" data-value="" placeholder="请选择" readonly data-data="{{d.data.select.simple}}" />
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code simple_picker">查看代码</a>
+							</div>
+							<div class="layui-form-mid layui-word-aux">简单选择，数据格式以,隔开字符串</div>
+						</div>
+
+						<div class="layui-form-item">
+							<label class="layui-form-label">自定义字段</label>
+							<div class="layui-input-inline">
+								<input class="layui-input sa_picker" sa_pars='{id:"cid",title:"title",child:"child"}' name="picker_id" data-value="2" placeholder="请选择" readonly data-data="{{=JSON.stringify(d.data.select.customer)}}" />
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code picker_customer">查看代码</a>
+							</div>
+							<div class="layui-form-mid layui-word-aux">设置数据中每个字段的名字</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">选择后回调</label>
+							<div class="layui-input-inline">
+								<input class="layui-input sa_picker" sa_pars='{cb:"sa_picker",title:"title",child:"child"}' name="picker_id2" data-value="4" placeholder="请选择" readonly data-data="{{=JSON.stringify(d.data.picker)}}" />
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code picker">查看代码</a>
+							</div>
+							<div class="layui-form-mid layui-word-aux">默认字段名称{id:"id",title:"title",child:"child"}</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">开启空值选项</label>
+							<div class="layui-input-inline">
+								<input class="layui-input sa_picker" sa_pars='{empty:"没事可以选我",title:"title",child:"child"}' name="picker_id3" data-value="" placeholder="请选择" readonly data-data="{{=JSON.stringify(d.data.picker)}}" />
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code picker_empty">查看代码</a>
+							</div>
+						</div>
+						
+						
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">radio</label>
+							<div class="layui-input-inline">
+								<div class="sa_radio" name="radio_id" value="4"  placeholder="请选择" data-data="{{=JSON.stringify(d.data.select.id)}}"></div>
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code radio_s">查看代码</a>
+							</div>
+							<div class="layui-form-mid layui-word-aux">纯属偷懒--！</div>
+						</div>
+						
+						<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+							<legend>省市区选择器</legend>
+						</fieldset>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">cas参数详细</label>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" data-id="#cas_pars" class="layui-btn layui-btn-primary layui-border-green show_pars">查看</a>
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">省市区选择</label>
+							<div class="layui-input-inline">
+								<input type="text" sa_pars='{level:3,enable:[{name:"广东"},{name:"江西",child:[{name:"南昌市"},{name:"抚州市",child:[{name:"资溪县"}]}]},{name:"四川"},{name:"河南",child:[{name:"开封市"}]}],defaults:["江西"],cb:"cas_get"}' name="select_pca" value="" placeholder="请选择省市区" autocomplete="off" class="layui-input layui-col-md6 cas">
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code cas_3">查看代码</a>
+							</div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">省市选择</label>
+							<div class="layui-input-inline">
+								<input type="text" sa_pars='{level:2,defaults:["广东"]}' name="select_pc" value="江西 / 南昌市" placeholder="请选择省市" autocomplete="off" class="layui-input layui-col-md6 cas">
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code cas_2">查看代码</a>
+							</div>
+							<div class="layui-form-mid layui-word-aux"></div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">自定义间隔符</label>
+							<div class="layui-input-inline">
+								<input type="text" sa_pars='{level:2,defaults:["广东"],split:" - "}' name="select_pc" value="" placeholder="请选择省市" autocomplete="off" class="layui-input layui-col-md6 cas">
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code cas_22">查看代码</a>
+							</div>
+							<div class="layui-form-mid layui-word-aux"></div>
+						</div>
+						
+						<div class="layui-form-item">
+							<label class="layui-form-label">省选择</label>
+							<div class="layui-input-inline">
+								<input type="text" sa_pars='{level:1}' name="select_p" value="" placeholder="请选择省" autocomplete="off" class="layui-input layui-col-md6 cas">
+							</div>
+							<div class="layui-input-inline" style="width:94px;">
+								<a href="javascript:;" class="layui-btn layui-btn-primary layui-border-green show_code cas_1">查看代码</a>
+							</div>
+							<div class="layui-form-mid layui-word-aux"></div>
+						</div>
+						
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" lay-submit lay-filter="form_post">打印表单数据</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+								
+							</div>
+						</div>
+					</script>
+				</form>
+			</div>
+		</div>
+
+    </div>
+	
+    
+  </div>
+</div>
+<style type="text/css">
+.site-demo-code {
+    width: 100%;
+    min-height: 490px;
+    border: none;
+    padding: 10px;
+    resize: none;
+    font-size: 12px;
+    background-color: #F7FBFF;
+    color: #881280;
+    font-family: Courier New;
+	tab-size:4;
+}
+</style>
+<script id="picker_pars" type="text/html">
+//picker使用的layui的dropdown 模块生成
+var pars = {
+	class:"sa_picker",//input的class 通过该classname渲染组件
+	data-data:[],//数据源 数组或字符串类型
+	data-value:"",//选中的数据 一般为数据源的id值
+	name:"",//选中数据后 存入的input的name值
+	sa_pars:{
+		id:"id",//数据源id字段名称
+		,title:"title"//数据源title字段名称
+		,child:"child"//数据源child字段名称
+		,empty:"请选择"//开启空值选择 如果有父级默认选中父级（默认不开启）
+		,cb:false//存在sa.methods中的回调函数名 默认没有 初始化时不回调
+	}//额外的参数
+}
+</script>
+<script id="cas_pars" type="text/html">
+//cas数据使用的是 jd收货地址中的省市区数据
+var pars = {
+	class:"cas",//input的class 通过该classname渲染组件
+	value:"江西省 / 南昌市",//选中的数据 使用 / 拼接
+	name:"",//选中数据后 存入的input的name值
+	sa_pars:{
+		level:"3",//省市区的列数
+		enable:[{name:"江西",child:[{name:"南昌市"}]}],//开启能选择的项  默认为false 都能选择
+		defaults:["江西"],//默认选中第一列的项
+		split:' / ',//间隔符
+		cb:false//存在sa.methods中的回调函数名 默认没有
+	}//额外的参数
+}
+</script>
+<script>
+layui.exampleRender = function(d){
+	console.log(d);
+	layui.use(['form','element'],function(){
+		var form = layui.form
+		,layer = layui.layer
+		,sa = layui.sa
+		,$ = layui.$;
+		
+		layui.form.render();
+		sa.methods = {
+			cas_get:function(res)
+			{
+				layer.msg('咱可是有回调的：'+JSON.stringify(res));
+			},
+			sa_picker:function(res)
+			{
+				layer.msg('咱也有回调了：'+JSON.stringify(res));
+			}
+		}
+		$(".show_code").click(function(){
+			var that = this;
+			var cl = $(this).attr('class');
+			var content = $($("#code").html()).find('*[class="'+cl+'"]').parent().prev().html();
+			var arr = content.split("\n");
+			var new_arr = [];
+			arr.forEach(function(line){
+				new_arr.push(line.replace(/(^\t{8})/g,""));
+			});
+			var data_data = '';
+			if($(that).parent().prev().find('*[data-data]').attr('data-data'))
+			{
+				data_data = "\n源数据："+$(that).parent().prev().find('*[data-data]').attr('data-data');
+			}
+			
+			//console.log(ele.html());
+			content = '<textarea class="layui-border-box site-demo-text site-demo-code" spellcheck="false" readonly="">'+new_arr.join("\n")+data_data+'</textarea>';
+			sa.alert(content);
+		});
+		
+		$(".show_pars").click(function(){
+			var content = $($(this).attr("data-id")).html();
+			sa.alert('<pre class="layui-code">'+content+'</pre>');
+		});
+		
+		layui.element.on('tab(tab_change)', function(data){
+
+			if(data.index == 1)
+			{
+				var html = $("#code").html();
+				var arr = html.split("\n");
+				var new_arr = [];
+				arr.forEach(function(line){
+					new_arr.push(line.replace(/(^\t{9})/g,""));
+				});
+				//console.log(arr);
+				$(data.elem).find('.layui-tab-item:eq(1)').find('textarea').val(new_arr.join("\n"));
+			}
+
+		});
+		
+		form.on('submit(form_post)', function(data){
+		
+			sa.alert(JSON.stringify(data.field));
+			return false;
+		});
+		
+	});
+}
+
+</script>
+

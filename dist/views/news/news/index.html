@@ -1,10 +1,49 @@
-<script type="text" la="system/posts/index" >
-	
-	{
-		"ptitle":"内容",
-		"title":"文章",
-		"page_url":"news/news/",
-		"request_url":"news/news"
-	}
+<script type="text/html" tpl lay-done="layui.copyPage(d);"></script>
 
+<script>
+layui.copyPage = function(d){
+	//return;
+	console.log('coyp');
+	layui.use(['searchlist'], function(){
+		
+		var page_config = {
+			page:'news/news/',
+			post_type:'',//open为弹出层编辑模式 否则是跳转页面编辑
+			table:{
+				url:'news/news'
+			}
+		};
+		
+		var sl = layui.searchlist;
+		var $ = layui.$;
+
+		
+		page_config.search = {
+			options:[
+				//筛选项
+				//{name:'category_id',data_name:'categorys',type:'sa_picker',params:{sa_pars:{empty:'全部'}}},
+				{name:'keyword',encode:true,type:'input'}
+			],
+			buttons:[
+				//按钮
+				'search','add','delete'
+			]
+		};
+		
+		
+		page_config.cols = [ //表头
+			{field: '', title: '', width:80, type:'checkbox'}
+			,{field: 'id', title: 'ID', width:80, sort: true}
+			,{field: 'title', title: '标题', width:300}
+			,{field: 'category.title', title: '分类', width:120, sa_filter:{field:'categorys'}}
+			,{field: 'created_at', title: '添加时间', width:180}
+			,{field:'displayorder',sort: true, edit:'text',width:100, title: '排序'}
+			,{field: 'status', title: '状态', width: 100, sa_filter:{field:'status'}}
+			,{field: 'edit', title: '操作'}
+		]
+		sl.render(page_config);
+		
+		
+	});
+}
 </script>

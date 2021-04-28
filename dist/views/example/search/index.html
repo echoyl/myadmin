@@ -13,64 +13,118 @@
 }
 </style>
 
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-		<div class="layui-col-md12">
-			<div class="layui-card">
-				<div class="layui-card-body">
-					<div class="layui-tab layui-tab-brief" lay-filter="tab_change">
-						<ul class="layui-tab-title">
-							<li  class="layui-this">示例</li>
-							<li>查看代码</li>
-						</ul>
-						
-						<div class="layui-tab-content">
-							<div class="layui-tab-item layui-show">
-								<script type="text/html" id="code_html" tpl lay-done="layui.searchRender(d);">
-									<div class="layui-search-header-auto">
-										<form class="layui-form" id="search_form" onsubmit="return false;">
-									
-										</form>
-									</div>
-									<div class="layui-card-body" style="padding-top:0;">
-										<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
-									</div>
-									<div class="layui-card-body layui-row layui-col-space20" style="padding-top:0;padding-bottom:10px;" id="result_html">
-
-									</div>
-								</script>
-							</div>
-							<div class="layui-tab-item">
-								<textarea class="layui-border-box site-demo-text site-demo-code" spellcheck="false" readonly=""></textarea>
-							</div>
-						</div>
-					</div>
-					
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
+<script id="searchlist_pars" type="text/html">
+//列表页面
+/*1.搜索栏列自定义
+**2.搜索栏按钮自定义添加
+**3.实现记住搜索参数及时刷新页面也不丢失
+**4.记住分页 刷新页面还是在当前页
+**5.添加了表头 单列单个 简单筛选 使用dropdown组件实现 
+*/
+var page_config = {
+	,page:'example/search/'//当前页面的路径
+	,page_post:'example/search/post'//添加或修改页面的路径
+	,open:false//编辑添加是否是在弹层中打开
+	,event:{}//表格列表中自定义事件集
+	,customerDone:function(){}//自定义加载完数据后的回调
+	,table:{//layui.table的参数可以复写在这里
+		url:'news/news'//列表请求地址路由
+	}
+};
+//搜索栏+按钮定义
+page_config.search = {
+	options:[
+		//筛选项
+		{
+			name:'category_id'//表单的name
+			,label:"信息分类"//是否添加label
+			,type:'sa_picker'//类型 支持 input,bldate,cas,xm_select,sa_picker
+			,data_name:'categorys'//如果是选择器之类的 数据源来自后台返回数据的字段名
+			,params:{//额外的参数 会JSON.stringify 后放入对应的dom中
+				placeholder:'请选择分类'
+				,sa_pars:{title:"name",child:"children",cb:"picker",empty:"请选择"}
+			}
+			,encode:false//是否 encodeURIComponent 该项的值
+			,width:"140px"//自定义项的 宽度
+			,br:false//检测第一个br:true 后自定换行隐藏多余的搜索项
+		}
+	],
+	buttons:[
+		//按钮
+		'search'//默认搜索按钮
+		,'add'//默认添加数据按钮
+		,'delete'//默认删除数据按钮
+		,{//自定义按钮 格式如下
+			icon:'',//icon的名字
+			title:'查看参数详情',//按钮显示文字
+			classname:'layui-btn layui-btn-primary layui-border-green show_pars',//按钮的样式名
+			func:function(cfg){//点击按钮事件 cfg为searchlist的config数据
+				//do somethings
+			}
+		}
+	]
+};
+//这里的每行设置的 lay-event 需要在 page_config.event 中定义
+/*新增表头简单的filter 单列radio格式，使用dropdown组件实现*/
+page_config.cols = [ //表头
+	{field: '', title: '', width:80, type:'checkbox'}
+	,{field: 'id', title: 'ID', width:80, sort: true}
+	,{field: 'title', title: '标题', width:300}
+	,{field: 'category.title', title: '分类', width:120,sa_filter:{filed:'categorys'}}
+	,{field: 'created_at', title: '添加时间', width:180,sort:true}
+	,{field: '', title: '自定义事件', width:100,templet:"&lt;a href='javascript:;' lay-event='clickme' class='layui-btn layui-btn-xs'>点我&lt;/a>"}
+	,{field:'displayorder',sort: true, edit:'text',width:100, title: '排序'}
+	,{field: 'status', title: '状态', width: 100,sa_filter:{field:'status',data:[{title:'启用',id:1},{title:'禁用',id:0}]}
+	,{field: 'edit', title: '操作'}
+];
+layui.searchlist.render(page_config);
+</script>
 <script id="code">
-layui.searchRender = function(){
-	layui.use(['searchlist','element'], function(){
+(function(){
+	layui.use(['searchlist'], function(){
 		
 		var page_config = {
-			url:'news/news',
 			page:'example/search/',
-			page_post:'example/search/post'
+			page_post:'example/search/post',
+			event:{
+				clickme:function(res)
+				{
+					layui.layer.msg('这行的标题是：'+res.title);
+				}
+			},
+			table:{
+				url:'news/news',
+			}
 		};
 		
 		var $ = layui.$;
-
+		
+		layui.sa.methods = {
+			picker:function(res){
+				console.log(res);
+			}
+		};
 		
 		page_config.search = {
 			options:[
 				//筛选项
-				{name:'category_id',list_name:'categorys',type:'pickerx','label':'信息分类：'},
+				{
+					name:'category_id',data_name:'categorys',type:'sa_picker','label':'信息分类'
+					,params:{
+						placeholder:'请选择分类',sa_pars:{title:"title",child:"child",cb:"picker",empty:"请选择"}
+					}
+				},
 				{
 					name:'keyword',encode:true,type:'input',width:'140px;',
-					br:true,label:'搜索关键字：'
+					br:true,label:'搜索关键字',params:{
+						placeholder:'请输入关键字'
+					}
+				},
+				{
+					name:'cas',type:'cas',label:'省市'
+					,params:{
+						placeholder:'请选择省市',sa_pars:{level:2}
+					}
 				},
 				{
 					name:'date',type:'bldate',data_type:'date',width:'200px;'
@@ -78,16 +132,8 @@ layui.searchRender = function(){
 						'data-type':'date',placeholder:'请选择日期'
 					}
 				},
-				{name:'pca',type:'cas',data_level:1,'placeholder':'请选择地区'},
 				{
-					name:'simple_id',type:'select_single',data_list:[{"cid":"1","title":"指定字段2"},{"cid":"2","title":"指定字段2"},{"cid":"3","title":"指定字段3"},{"cid":"4","title":"默认选中字段"}]
-					,params:{
-						'data-id':'cid','data-name':'title',placeholder:'请选择'
-					}
-					
-				},
-				{
-					name:'more_id',type:'xm_select',data_list:[
+					name:'more_id',type:'xm_select',data:[
 						{"name": "销售员", "children": [
 							{"name": "张三", "id": 1},
 							{"name": "李四", "id": 2},
@@ -107,7 +153,16 @@ layui.searchRender = function(){
 			],
 			buttons:[
 				//按钮
-				'search','add','delete'
+				'search','add','delete',{
+					icon:'',
+					title:'查看参数详情',
+					classname:'layui-btn layui-btn-primary layui-border-green show_pars',
+					func:function(cfg){
+						//添加默认打开新页面
+						var content = $("#searchlist_pars").html();
+						layui.sa.alert('<pre class="layui-code">'+content+'</pre>');
+					}
+				}
 			]
 		};
 		
@@ -116,43 +171,15 @@ layui.searchRender = function(){
 			{field: '', title: '', width:80, type:'checkbox'}
 			,{field: 'id', title: 'ID', width:80, sort: true}
 			,{field: 'title', title: '标题', width:300}
-			,{field: 'category.title', title: '分类', width:120}
-			,{field: 'created_at', title: '添加时间', width:180}
-			,{field:'displayorder',sort: true, edit:'text',width:'100', title: '排序'}
-			,{field: 'status', title: '状态', width: 100, sort: true}
+			,{field: 'category.title', title: '分类', width:120,sa_filter:{field:'categorys'}}
+			,{field: 'created_at', title: '添加时间', width:180,sort:true}
+			,{field: '', title: '自定义事件', width:100,templet:"<button type='button' lay-event='clickme' class='layui-btn layui-btn-xs'>点我</button>"}
+			,{field:'displayorder',sort: true, edit:'text',width:100, title: '排序'}
+			,{field: 'status', title: '状态', width: 100,sa_filter:{field:'status',data:[{title:'启用',id:1},{title:'禁用',id:0}]}}
 			,{field: 'edit', title: '操作'}
 		]
 		layui.searchlist.render(page_config);
 		
-		
-		
-		layui.element.on('tab(tab_change)', function(data){
-
-			if(data.index == 1)
-			{
-				var new_arr = [];
-				
-				var code_html = $("#code_html").html().toString();
-				var arr2 = code_html.split("\n");
-				
-				arr2.forEach(function(line){
-					new_arr.push(line.replace(/(^\t{9})/g,""));
-				});
-				
-				var html = $("#code").html().toString();
-				var arr = html.split("\n");
-				new_arr.push('<script>');
-				arr.forEach(function(line){
-					//new_arr.push(line.replace(/(^\t{9})/g,""));
-					new_arr.push(line);
-				});
-				new_arr.push("<\/script>");
-				console.log(arr);
-				$(data.elem).find('.layui-tab-item:eq(1)').find('textarea').val(new_arr.join("\n"));
-			}
-
-		});
-		
 	});
-};
+})();
 </script>

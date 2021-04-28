@@ -1,38 +1,26 @@
 <script type="text/html" tpl lay-done="layui.copyPage(d);"></script>
-<div class="layui-fluid">
-    <div class="layui-row layui-col-space15">
-		<div class="layui-col-md12">
-			<div class="layui-card">
-				<div class="layui-search-header-auto">
-					<form class="layui-form" id="search_form" onsubmit="return false;">
-						 
-					</form>
-				</div>
-				<div class="layui-card-body" style="padding-top:0;">
-					<table id="tableId" lay-filter="tableId" lay-size="lg"></table>
-				</div>
-			</div>
-		</div>
-    </div>
-</div>
 
 <script>
 layui.copyPage = function(d){
-	layui.use(['categoryList'], function () {
-	
+	layui.use(['sa_category'], function () {
 		let page_config = {
-			url:d.page_info.request_url?d.page_info.request_url:'category',
 			page:d.page_info.page_url,
 			page_post:d.page_info.page_post?d.page_info.page_post:'',
-			where:{page_info:d.page_info},
 			post_type:'open',//编辑方式为弹出层
+			table:{
+				url:d.page_info.request_url?d.page_info.request_url:'category',
+				where:{page_info:d.page_info},
+			}
 		};
-		
-		var sl = layui.categoryList;
+	
 		var $ = layui.$;
 
 		
 		page_config.search = {
+			options:[
+				//筛选项
+				{name:'keyword',encode:true,type:'input'}
+			],
 			buttons:[
 				//按钮
 				'add','delete'
@@ -41,13 +29,13 @@ layui.copyPage = function(d){
 		
 		page_config.cols = page_config.cols?page_config.cols:[ //表头
 			{field: '', title: '', width:80, type:'checkbox'}
-			,{field:'id',width:'100', title: 'id'}
-			,{field:'title',width:'300', title: '名称'}
-			,{field:'displayorder', edit:'text',width:'100', title: '排序'}
+			,{field:'id',width:100, title: 'id'}
+			,{field:'title',width:300, title: '名称'}
+			,{field:'displayorder', edit:'text',width:100, title: '排序'}
 			,{field: 'status', title: '状态', width: 90}
 			,{field: 'edit', title: '操作',param:{level:d.page_info.level}}
 		]
-		sl.render(page_config);
+		layui.sa_category.render(page_config);
 		
 	});
 }

@@ -1,0 +1,79 @@
+<div style="padding:10px;">	
+	<div class="layui-card-body">
+		<form class="layui-form" lay-filter="post_filter">
+		<script type="text/html" tpl lay-url="category/show" lay-done="layui.categoryOpen(d);">
+			<div class="layui-form-item">
+				<label class="layui-form-label">分类名</label>
+				<div class="layui-input-inline">
+					<input type="text" name="base[title]" value="{{d.data.title}}" placeholder="请输入分类名" autocomplete="off" class="layui-input layui-col-md6">
+				</div>
+			</div>
+			<div class="layui-form-item layui-hide">
+				<label class="layui-form-label">别名</label>
+				<div class="layui-input-inline">
+					<input type="text" name="base[title2]" value="{{d.data.title2}}" placeholder="请输入别名" autocomplete="off" class="layui-input layui-col-md6">
+				</div>
+			</div>
+			
+
+			
+			<div class="layui-form-item">
+				<label class="layui-form-label">排序</label>
+				<div class="layui-input-inline">
+					<input type="text" name="base[displayorder]" value="{{d.data.displayorder}}" placeholder="请输入排序" autocomplete="off" class="layui-input layui-col-md6">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">状态</label>
+				<div class="layui-input-block">
+					<input type="checkbox" name="base[status]" {{# if(d.data.status == 1){ }}checked{{# } }} value="1" lay-skin="switch" lay-text="启用|关闭">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" lay-submit lay-filter="post_filter">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					<input type="hidden" name="id" value="{{d.data.id}}">
+					<input type="hidden" name="base[parent_id]" value="{{d.data.parent_id}}">
+				</div>
+			</div>
+		</script>
+		</form>
+	</div>
+</div>
+
+<script>
+layui.categoryOpen = function(d){
+	console.log(d);
+	layui.use(['form'],function(){
+		var form = layui.form
+		,layer = layui.layer
+		,sa = layui.sa;
+		var $ = layui.$;
+		layui.form.render();
+		var firstIndex = layer.index;
+		//监听提交
+		form.on('submit(post_filter)', function(data){
+			var url = d.page_info.request_url?d.page_info.request_url:'category';
+			sa.request({
+				url: url
+				,type:'post'
+				,data: data.field
+				,done: function(res) {
+					//登入成功的提示与跳转
+					layer.msg('操作成功', {
+						offset: '15px',
+						icon: 1,
+						time: 1000
+					}, function() {
+						layui.sa.close(res,firstIndex);
+					});
+					
+				}
+			});
+			return false;
+		});
+		
+	});
+}
+</script>

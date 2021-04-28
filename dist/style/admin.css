@@ -622,8 +622,7 @@ html{
 
 .layui-search-header-auto {
     height:auto;
-	padding:8px 15px;
-	border-bottom: 1px solid #f6f6f6;
+	padding:8px 15px 0;
 	position:relative;
 }
 .layui-search-header-auto.search_more{
@@ -653,14 +652,54 @@ html{
 	margin-bottom:2px;
 	margin-right:4px;
 }
-.layui-search-header-auto .search_item a{
-	margin-right:4px;
+
+.search-form .layui-form-label{
+	width: auto!important;
+    height: 36px;
+    padding: 0 12px;
+    line-height: 36px;
+    border-radius: 2px 0 0 2px;
+    text-align: center;
+    background-color: #FBFBFB;
+    border:1px solid #E9E9E9;
+	margin-right:-1px;
+	color:#666;
 }
 
 .layui-input-block{
 	margin-left:130px;
 }
 .layui-fluid{padding:0 10px;}
+
+.form-input-icon .layui-input{
+	padding-right: 30px;
+}
+.form-input-icon i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+	margin-top:-7px;
+	height:14px;
+	width:14px;
+	font-size:14px;
+	line-height:14px;
+    cursor: pointer;
+	color: #c2c2c2;
+}
+.form-input-button{
+	padding-left:5px;
+}
+th .icon-filter{
+	position:absolute;
+	right:10px;
+	cursor:pointer;
+	color:#b2b2b2;
+}
+th .icon-filter.filter_checked{
+	color:#009688;
+}
+.sa_sl_filter .layui-menu-body-title{padding-right:22px;}
+/*button中icon高度不居中这里修复一下*/
 
 /*! CSS Used from: Embedded */
 .layui-layer-admin .layui-layer-title{background-color:#20222A!important;}
@@ -700,9 +739,7 @@ html{
     cursor: pointer;
 }
 
-.layui-table tbody tr:hover, .layui-table thead tr, .layui-table-click, .layui-table-header, .layui-table-hover, .layui-table-mend, .layui-table-patch, .layui-table-tool, .layui-table-total, .layui-table-total tr, .layui-table[lay-even] tr:nth-child(even){
-	background-color:#f6f6f6;
-}
+
 
 .show_image{cursor:pointer;max-width:200px;height:auto;}
 .show_image.avatar{max-width:75px;}
