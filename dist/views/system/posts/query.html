@@ -40,7 +40,7 @@ layui.queryDone = function(d){
 				classname:'',
 				func:function(cfg){
 					//添加默认打开新页面
-					let selected = layui.sa_table.checkStatus('open_search_list');
+					let selected = layui.sa_table.checkStatus(cfg.table.id);
 					if(selected.data.length > 0)
 					{
 						layui.sa.close(selected.data,firstIndex);
