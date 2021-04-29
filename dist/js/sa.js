@@ -7,7 +7,8 @@ layui.extend({
 	echartsTheme:'js/modules/echarts/echartsTheme',
 	echarts:'js/modules/echarts/echarts',
 	sa_upload:'js/modules/sa_upload',
-	sa_category:'js/modules/sa/category'
+	sa_category:'js/modules/sa/category',
+	sa_attachment:'js/modules/sa/attachment'
 }).define(["laytpl", "layer",'render'], function(exports) {
 	
 	var $ = layui.$,

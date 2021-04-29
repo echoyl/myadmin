@@ -42,16 +42,21 @@
 				{
 					"name":"select",
 					"title":"下拉",
-					"type":"select",
+					"type":"sa_picker",
 					"data":[
-						{"name":"下拉1","value":"值1"},
-						{"name":"下拉2","value":"值2"}
+						{"title":"下拉1","id":"值1"},
+						{"title":"下拉2","id":"值2"}
 					]
 				},
 				{
 					"name":"date",
 					"title":"日期",
 					"type":"date"
+				},
+				{
+					"name":"text",
+					"title":"描述",
+					"type":"textarea"
 				}
 			]
 		},

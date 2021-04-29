@@ -1,5 +1,5 @@
 //单列选择渲染
-;layui.define(['sortable'],function(exports) {
+;layui.define(['sortable','sa_attachment'],function(exports) {
 	
 	var $ = layui.$,sa = layui.sa,sortable = layui.sortable;
 
@@ -104,12 +104,11 @@
 					$("#"+parent_id).find(".attachmentcon").html('');
 					changeImg($("#"+parent_id).prev());
 				});
+				var con_btn = $(this_con).find('.attachment_button');
+				sortable.create(document.getElementById($(con_btn).data('id')), { group: $(con_btn).data('id'),onEnd:function(){changeImg($(con_btn).parent());} });
 				
-				$(this_con).find('.attachment_button').click(function(){
+				$(con_btn).click(function(){
 					var t = this;
-					
-					sortable.create(document.getElementById($(this).data('id')), { group: $(this).data('id'),onEnd:function(){changeImg($(t).parent());} });
-					
 					var limit = $(this).data('limit');
 					var isfile = $(this).data('file');
 					var name = $(this).data('name');
@@ -127,27 +126,25 @@
 					{
 						length_distance = 1;
 					}
-					sa.open({
-						data:{limit:length_distance <= 0?-1:length_distance,isMultiple:limit,isfile:isfile?1:0,name:name},
-						area:['820px','734px'],
-						url:'system/attachment',
-						title:isfile?'文件管理':'图片管理',
-						callback:function(res){
-
-							layui.laytpl(image_tpl).render({list:res}, function(html){
-								if(limit == 1)
-								{
-									$("#"+parent_id).find(".attachmentcon").html(html);
-								}else
-								{
-									$("#"+parent_id).find(".attachmentcon").append(html);
-								}
-								
-							});
-							changeImg($("#"+parent_id).prev());
-						}
+					layui.sa_attachment.render({
+							limit:length_distance <= 0?-1:length_distance,
+							isMultiple:limit,
+							isfile:isfile?1:0,
+							name:name
+						},function(res){
+						
+						layui.laytpl(image_tpl).render({list:res}, function(html){
+							if(limit == 1)
+							{
+								$("#"+parent_id).find(".attachmentcon").html(html);
+							}else
+							{
+								$("#"+parent_id).find(".attachmentcon").append(html);
+							}
+							
+						});
+						changeImg($("#"+parent_id).prev());
 					});
-					
 				});
 			});
 			//移除属性防止二次渲染
