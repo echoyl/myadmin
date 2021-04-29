@@ -29,9 +29,9 @@
 		{{#  layui.each(d.col, function(colIndex, col){ }}
 		<div class="sa_opt_col">
 			{{# if(col.type == 'date'){ }}
-			<div class="layui-input-inline">
+
 				<input type="text" name="{{col.name}}" readonly value="{{=d.val[col.name]}}" placeholder="{{col.title}}" autocomplete="off" class="layui-input layui-col-md6 bldate options_input" />
-			</div>
+			
 			{{# }else if(col.type == 'select'){ }}
 				<select name="{{col.name}}" class="options_input">
 					{{#  layui.each(col.data, function(sindex, sitem){ }}
@@ -56,9 +56,9 @@
 				<input class="layui-input options_input sa_picker" data-type="sa_picker" name="{{col.name}}" data-value="{{=d.val[col.name]}}" placeholder="{{col.title}}" readonly="" data-data="{{=JSON.stringify(col.data)}}">
 			</div>
 			{{# }else{ }}
-			<div class="layui-input-inline">
+
 				<input type="text" name="{{col.name}}" value="{{=d.val[col.name]}}" placeholder="{{col.title}}" autocomplete="off" class="layui-input layui-col-md6 options_input" />
-			</div>
+			
 			{{# } }}
 		</div>
 		{{#  }); }}
