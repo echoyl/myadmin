@@ -229,6 +229,7 @@ layui.define(["sa_table", "layer","form",'render','laytpl','dropdown'], function
 				if(ik != 'page_info')
 				{
 					items.push({name:ik,value:cfg.table.where[ik]});
+					has_name.push(ik);
 				}
 			}
 		}
@@ -320,7 +321,7 @@ layui.define(["sa_table", "layer","form",'render','laytpl','dropdown'], function
 			layui.dropdown.render({
 				elem: '#'+filter.id
 				,data: filter.data
-				,templet:'{{d.title}} <i class="layui-icon layui-icon-ok {{d.show?\'\':\'layui-hide\'}}" />'
+				,templet:'{{d.'+filter.pars.title+'}} <i class="layui-icon layui-icon-ok {{d.show?\'\':\'layui-hide\'}}" />'
 				,className:'sa_sl_filter'
 				,click: function(obj){
 					var is_true = false;
@@ -404,21 +405,21 @@ layui.define(["sa_table", "layer","form",'render','laytpl','dropdown'], function
 				}
 			}
 			//添加表头筛选检索 添加表头筛选图标
-			if(pageConfig.cols[index].sa_filter)
+			if(value.sa_filter)
 			{
 				
 				var filter_id = sa.random('filter_');
-				var checked_val = sa.router()['search'][pageConfig.cols[index].sa_filter.field];
+				var checked_val = sa.router()['search'][value.sa_filter.field];
 				var checked_class = checked_val?'filter_checked':'';
 				pageConfig.cols[index].title += '<i id="'+filter_id+'" class="iconfont icon-filter '+checked_class+'"></i>';
 				var data = [];
-				if(pageConfig.cols[index].sa_filter.data)
+				if(value.sa_filter.data)
 				{
-					data = pageConfig.cols[index].sa_filter.data;
+					data = value.sa_filter.data;
 				}
 				
 				that.config.filter.push({
-					id:filter_id,data:data,field:pageConfig.cols[index].sa_filter.field
+					id:filter_id,data:data,field:value.sa_filter.field,pars:value.sa_filter.pars?value.sa_filter.pars:{title:'title'}
 				});
 			}
 		});
@@ -518,7 +519,7 @@ layui.define(["sa_table", "layer","form",'render','laytpl','dropdown'], function
 						if(typeof value.func == 'function')
 						{
 							$('body').on('click','#'+s_id,function(){
-								value.func(pageConfig);
+								value.func(pageConfig,this);
 							});
 						}
 						buttons.push(button);
