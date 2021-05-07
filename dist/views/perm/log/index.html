@@ -1,0 +1,76 @@
+<style type="text/css">
+pre{outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+.string { color: green; }        /*字符串的样式*/
+.number { color: darkorange; }    /*数字的样式*/
+.boolean { color: blue; }        /*布尔型数据的样式*/
+.null { color: magenta; }        /*null值的样式*/
+.key { color: red; }            /*key值的样式*/
+</style>
+<script>
+(function(){
+	layui.use(['searchlist'], function(){
+		function syntaxHighlight(json) {
+			if (typeof json != 'string') {
+				json = JSON.stringify(json, undefined, 2);
+			}
+			json = json.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+			return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+				function (match) {
+					var cls = 'number';
+					if (/^"/.test(match)) {
+						if (/:$/.test(match)) {
+							cls = 'key';
+						} else {
+							cls = 'string';
+						}
+					} else if (/true|false/.test(match)) {
+						cls = 'boolean';
+					} else if (/null/.test(match)) {
+						cls = 'null';
+					}
+					return '<span class="' + cls + '">' + match + '</span>';
+				}
+			);
+		}
+	
+		var page_config = {
+			table:{url:'perm/log'},
+			page:'perm/log/',
+			post_type:'open',
+			event:{
+				log_detail:function(item)
+				{
+					console.log(item);
+					var content = JSON.parse(item.request);
+					layui.sa.alert('<pre class="layui-code">'+syntaxHighlight(content)+'</pre>','请求详情');
+				}
+			}
+		};
+		
+		var sl = layui.searchlist;
+		var $ = layui.$;
+
+		
+		page_config.search = {
+			options:[
+				{label:'操作时间',type:'bldate',name:'sdate',params:{sa_pars:{range:'-'}},width:'250px'}
+			],
+			buttons:['search','delete']
+		};
+		
+		
+		page_config.cols = [ //表头
+			{field: '', title: '', width:80, type:'checkbox'}
+			,{field: 'id', title: 'ID', width:60, sort: true}
+			,{field: '', title: '用户名', width:120,templet:"{{d.user.username}}"}
+			,{field: 'type', title: '类型', width:120}
+			,{field: 'url', title: 'URL', width:360}
+			,{field: 'ip', title: 'IP', width:150}
+			,{field: 'created_at', title: '操作时间', width:180}
+			,{field: '', title: '操作',templet:"<a href='javascript:;' lay-event='log_detail' class='layui-btn layui-btn-xs'>查看详情</a>"}
+		];
+		sl.render(page_config);
+		
+	});
+})();
+</script>

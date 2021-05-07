@@ -33,7 +33,7 @@ layui.define(['laydate'],function(exports) {
 			var isRange = sa.getValue($(this).attr('data-range'));
 			var format = sa.getValue($(this).attr('data-format'));
 			//重新引入 参数都放在同一个json中
-			let pars = sa.json(sa.getValue($(this).attr('sa-pars')));
+			let pars = sa.json(sa.getValue($(this).attr('sa_pars')));
 			if(type)
 			{
 				if(!format)

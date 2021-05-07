@@ -1,0 +1,184 @@
+<title>后台角色</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>权限</cite></a>
+	<a href="#/perm/role/"><cite>角色列表</cite></a>
+	<a><cite>角色信息</cite></a>
+  </div>
+</div>
+
+<style>
+/* 这段样式只是用于演示 */
+
+</style>
+
+<div class="layui-fluid">
+	<div class="layui-row layui-col-space15">
+		<div class="layui-col-md12">
+			<div class="layui-card">
+				<div class="layui-card-body">
+					<form class="layui-form" lay-filter="role_post">
+						<div class="layui-tab layui-tab-brief" lay-filter="component-tabs-brief">
+					<script id="userpost" type="text/html" tpl lay-url="perm/role/show" lay-done="postRender(d);">
+						<ul class="layui-tab-title">
+							<li  class="layui-this">基本信息</li>
+						</ul>
+						<div class="layui-tab-content">
+							<div class="layui-tab-item layui-show">
+								<div class="layui-form-item">
+									<label class="layui-form-label">角色名</label>
+									<div class="layui-input-inline">
+										<input type="text" name="base[title]" value="{{d.data.title}}" lay-verify="required" placeholder="请输入角色名" autocomplete="off" class="layui-input layui-col-md6">
+										
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">权限管理</label>
+									<div class="layui-input-block" id="perm_content_c">
+										
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<label class="layui-form-label">状态</label>
+									<div class="layui-input-block">
+										<input type="checkbox" name="base[status]" {{# if(d.data.status == 1){ }}checked{{# } }} value="1" lay-skin="switch" lay-text="启用|启用">
+									</div>
+								</div>
+								<div class="layui-form-item">
+									<div class="layui-input-block">
+										<button class="layui-btn" lay-submit id="sub" lay-filter="role_post">立即提交</button>
+										<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+										<input type="hidden" name="id" value="{{d.data.id}}" />
+										
+									</div>
+								</div>
+							</div>
+						</div>
+					</script>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text" id="perm_content">
+	<div class="layui-collapse">
+		{{#  layui.each(d.data.perms.parent, function(index, item){ }}
+		<div class="layui-colla-item">
+			<h2 class="layui-colla-title">{{item.text}}</h2>
+			<div class="layui-colla-content layui-show layui-row">
+				{{# if(d.data.perms.son[index] != undefined){ }}	
+					{{#  layui.each(d.data.perms.son[index], function(key, val){ }}
+					<div class="layui-row">
+						<div class="layui-input-block" style="margin-left:10px;">
+							<input type="checkbox" value="1" lay-filter="checkall" name="checkall" title="{{val.text}}" lay-skin="primary">
+							{{#  layui.each(val, function(k, v){var v=v.replace('-log',''); }}
+								{{# if(k != 'text' && k != 'xxx'){ }}
+									<input type="checkbox" value="{{index}}.{{key}}.{{k}}" {{# if(layui.$.inArray(index+'.'+key+'.'+k,d.data.user_perms) > -1){ }}checked{{# } }} name='base[perms2][]' title="{{v}}" lay-skin="primary">
+								{{# } }}
+							{{#  }); }}													
+						</div>
+					</div>
+					{{#  }); }}
+				{{# }else{ }}
+					<div class="layui-row">
+						<div class="layui-input-block" style="margin-left:10px;">
+							<input type="checkbox" value="1" lay-filter="checkall" name="checkall" title="{{item.text}}" lay-skin="primary">
+							{{#  layui.each(item, function(key, val){var val=val.replace('-log',''); }}
+								{{# if(key != 'text' && key != 'xxx'){ }}
+									<input type="checkbox" value="{{index}}.{{key}}" {{# if(layui.$.inArray(index+'.'+key,d.data.user_perms)> -1){ }}checked{{# } }} name='base[perms2][]' title="{{val}}" lay-skin="primary">
+								{{# } }}
+							{{#  }); }}															
+						</div>
+					</div>
+				{{# } }}
+			</div>
+		</div>
+		{{#  }); }}
+	</div>
+</script>
+<script>
+function postRender(d){
+
+
+	layui.use(['element','form','sa'], function(){
+		var form = layui.form
+		,router = layui.router()
+		,element = layui.element
+		,layer = layui.layer
+		,sa = layui.sa;
+		var $ = layui.$;
+		//form.render();
+		
+		function renderPerms(data)
+		{
+			$("#perm_content_c").html(layui.laytpl($("#perm_content").html()).render(data));
+			layui.form.render();
+			element.render();			
+		}
+		renderPerms(d);
+		
+		
+		layui.formext = function(){
+			//检测是否全选状态
+			$("input[name='checkall']").each(function(){
+				var input_length = $(this).siblings('input').length;
+				var checked_length = 0;
+				$(this).siblings('.layui-form-checkbox').each(function(){
+					if($(this).hasClass("layui-form-checked"))
+					{
+						checked_length++;
+					}
+				});
+				console.log(input_length+'--'+checked_length);
+				if(input_length == checked_length)
+				{
+					$(this).attr('checked',true);
+					$(this).next().addClass("layui-form-checked");
+				}
+			});
+		}
+		layui.formext();
+		
+		form.on('checkbox(checkall)', function(data){
+			$(data.elem).siblings('input[type="checkbox"]').prop("checked",data.elem.checked);
+			layui.form.render();
+		});
+		
+		//监听提交
+		
+		form.on('submit(role_post)', function(data){
+			var url = 'perm/role';
+			
+			if(!data.field['base[status]'])
+			{
+				data.field['base[status]'] = 0;
+			}
+			
+			sa.request({
+				url: url
+				,type:'post'
+				,data: data.field
+				,done: function(res) {
+					//登入成功的提示与跳转
+					layer.msg('操作成功', {
+						offset: '15px',
+						icon: 1,
+						time: 1000
+					}, function() {
+						//location.hash = search.redirect ? decodeURIComponent(search.redirect) : '/';
+						//
+						//admin.closeThisTabs();
+						location.hash = "/perm/role/";
+					});
+				}
+			});
+			return false;
+		});
+		
+	});
+}
+</script>
