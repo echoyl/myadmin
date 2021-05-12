@@ -12,7 +12,7 @@
 							<div class="muti_one_img">\
 							<img onload="layui.sa.loadImg(this)" data-id="{{item.id}}" src="{{item.thumb_url?item.thumb_url:"./dist/lib/banlv/nopic.jpg"}}" \
 							data-bigsrc="{{item.url?(item.url.indexOf("http") > -1?item.url:layui.env.storage_path+item.url):""}}" \
-							data-index={{index}} data-src="{{item.url}}" class="show_image" />\
+							data-index={{index}} data-src="{{item.url}}" />\
 							</div>\
 							</div>\
 							{{# if(item.type == 1){ }}\
@@ -37,6 +37,32 @@
 			$(this).html(images_html);
 			//移除属性防止二次渲染
 			$(this).removeClass(r.name);
+		});
+		//绑定点击事件
+		$("body").on("click",'.muti_one_img_cc',function(){
+			var index = $(this).parent().index();
+			var view_pics = [];
+			$(this).parent().parent().find('img').each(function(){
+				var bigsrc = $(this).attr('data-bigsrc');
+				view_pics.push({
+					"alt": '',
+					"pid": 0, //图片id
+					"src": typeof bigsrc != 'undefined'?bigsrc:$(this).attr('src'), //原图地址
+					"thumb": $(this).attr('src') //缩略图地址
+				});
+			});
+			var json = {
+			  "title": "浏览图片", //相册标题
+			  "id": layui.sa.random('attachment_photos_'), //相册id
+			  "start": index, //初始显示的图片序号，默认0
+			  "data": view_pics
+			}
+			layui.layer.photos({
+				photos: json //格式见API文档手册页
+				,closeBtn: 1
+				,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机
+			});
+			
 		});
 	}
 	

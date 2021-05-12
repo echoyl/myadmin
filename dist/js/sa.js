@@ -8,8 +8,9 @@ layui.extend({
 	echarts:'js/modules/echarts/echarts',
 	sa_upload:'js/modules/sa_upload',
 	sa_category:'js/modules/sa/category',
-	sa_attachment:'js/modules/sa/attachment'
-}).define(["laytpl", "layer",'render'], function(exports) {
+	sa_attachment:'js/modules/sa/attachment',
+	nprogress:'js/modules/nprogress/nprogress'
+}).define(["laytpl", "layer",'render','nprogress'], function(exports) {
 	
 	var $ = layui.$,
 		laytpl = layui.laytpl,
@@ -74,6 +75,7 @@ layui.extend({
 			f.request_status = true;
 		}
 		f.loading();
+		layui.nprogress.start();
 		var router = f.router();
 		if(typeof param.processData == 'undefined')
 		{
@@ -94,6 +96,7 @@ layui.extend({
 			data: pdata || {},
 			success: function(res) {
 				f.removeLoading();
+				layui.nprogress.done();
 				if(param.type == 'post')
 				{
 					f.request_status = false;

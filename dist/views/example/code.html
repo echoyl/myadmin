@@ -34,7 +34,7 @@
 						<li>弹层编辑页面</li>
 						<li>弹层搜索页面</li>
 						<li>复制页面</li>
-						<li>php-Controller</li>
+						<li>命令生成文件</li>
 						<li>项目部署</li>
 					</ul>
 					<div class="layui-tab-content">
@@ -483,39 +483,12 @@ layui.queryDone = function(d){
 
 <!--php Controller-->
 <script type="text/html" class="code_example">
-<?php
+此命令可以说偷了一部分懒了
 
-namespace App\Http\Controllers\admin\user;
+php artisan sa:command news/news list_0_1
 
-use App\Models\user\Wxapp;
-use Echoyl\Sa\Http\Controllers\admin\CrudController;
-
-class WxappController extends CrudController
-{
-    //
-    public function __construct()
-	{
-		$this->model = new Wxapp();
-    }
-    
-    public function handleSearch()
-	{
-		$m = $this->model;
-
-		$search = [];
-
-		$keyword = request('keyword','');
-		if($keyword)
-		{
-			//$search['keyword'] = urldecode($keyword);
-			$m = $m->where([['nickName','like','%'.urldecode($keyword).'%']]);
-
-		}
-
-		return [$m,$search];
-
-	}
-}
+news/news  创建文件夹 news/news/index.html post.html 及 controller和model
+list_0_1   list|categoy 创建列表页或分类列表页 0|1 编辑页面是否弹出层模式 0|1 是否需要生成 query.html 查询页面
 
 </script>
 
